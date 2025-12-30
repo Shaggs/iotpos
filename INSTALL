@@ -33,16 +33,18 @@ Just in case you already didn't, make sure everything is up to date:
 
   sudo apt-get update
 
-Now that everything is up to date, we can install the needed kde4 packages   (kdelibs4, kdebase4, kdepimlibs4) and all of his
-  dependencies (qt4...), and everything else we need  for the compile and install:
+Now that everything is up to date, we can install the needed KDE Frameworks 5 and Qt5 packages and everything else
+  we need for the compile and install:
   
-  sudo apt-get install kdebase-runtime libqt4-dev build-essential g++ cmake gettext libqt4-sql-mysql kdelibs5-dev
+  sudo apt-get install build-essential cmake extra-cmake-modules gettext g++ qtbase5-dev qttools5-dev \
+    libqt5sql5-mysql libkf5config-dev libkf5configwidgets-dev libkf5i18n-dev \
+    libkf5kio-dev libkf5widgetsaddons-dev libkf5xmlgui-dev
   
 For a spanish KDE app: 
 
   sudo apt-get install kde-l10n-es
 
-Once you have KDE, and QT4 installed, we can install mysql:
+Once you have KDE Frameworks and Qt5 installed, we can install mysql:
 
   sudo apt-get install mysql-client mysql-server 
 
@@ -57,12 +59,9 @@ Move into the newly created directory, create a 'build' directory inside and mov
   mkdir build
   cd build
 
-Inside build directory run CMake with your path to KDE4:
+Inside build directory run CMake with your install prefix:
 
-  cmake .. -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`
-  
-  FOR OTHER LINUX DISTROS TRY THIS:
-  cmake -DCMAKE_INSTALL_PREFIX=kde4-config --prefix -DQT_QMAKE_EXECUTABLE=which qmake-qt4 -DQT_INCLUDE_DIR=/usr/include/qt4 -DCMAKE_BUILD_TYPE=Release ..
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
  
 Run make to compile iotpos. This took about an hour on the Pi A, A+, B and B+, took 15 minutes on the new Pi2:
   
@@ -235,6 +234,4 @@ Go to menu help > about plugins
 Uncheck device support > remote linux
 Restart Qt Creator
 Go to tools > options TAB > build & run > Qt versions > add "/usr/bin/qmake-qt4"
-
-
 

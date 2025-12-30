@@ -17,11 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 #include <KMessageBox>
 #include <KFileDialog>
 #include <kiconloader.h>
-#include <kstandarddirs.h>
+#include "pathutils.h"
+#include "../../src/localeutils.h"
 
 #include <QByteArray>
 #include <QRegExpValidator>
@@ -89,7 +90,7 @@ PurchaseEditor::PurchaseEditor( QWidget *parent )
     ui->chIsAGroup->setDisabled(true);
 
     
-    QString path = KStandardDirs::locate("appdata", "styles/");
+    QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
     errorPanel = new MibitTip(this, ui->widgetPurchase, path, DesktopIcon("dialog-warning",32) );
     
@@ -721,7 +722,7 @@ void PurchaseEditor::insertProduct(ProductInfo info)
 
     //update info on group caption
     ui->groupBox->setTitle( i18n("Items in this purchase [ %1  items,  %2 ]",itemCount,
-                                 KGlobal::locale()->formatMoney(totalBuy, QString(), 2)
+                                 LocaleUtils::formatMoney(totalBuy, QString(), 2)
                                  ) );
     
     qDebug()<<"totalBuy until now:"<<totalBuy<<" itemCount:"<<itemCount<<"info.cost:"<<info.cost<<"info.purchaseQty:"<<info.purchaseQty;
@@ -755,7 +756,7 @@ void PurchaseEditor::deleteSelectedItem() //added on dec 3, 2009
       qDebug()<<"Total taxes updated:"<<totalTaxes;
       delete myDb;
       ui->groupBox->setTitle( i18n("Items in this purchase [ %1  items,  %2 ]",itemCount,
-                                   KGlobal::locale()->formatMoney(totalBuy, QString(), 2)
+                                   LocaleUtils::formatMoney(totalBuy, QString(), 2)
                                    ) );
     }
   }

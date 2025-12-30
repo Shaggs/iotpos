@@ -21,7 +21,7 @@
 #ifndef PURCHASEEDITOR_H
 #define PURCHASEEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

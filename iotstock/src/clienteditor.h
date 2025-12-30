@@ -21,7 +21,7 @@
 #ifndef CLIENTEDITOR_H
 #define CLIENTEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QtGui>
 #include "ui_editclient_widget.h"
 

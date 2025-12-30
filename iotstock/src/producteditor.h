@@ -21,7 +21,7 @@
 #ifndef PRODUCTEDITOR_H
 #define PRODUCTEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

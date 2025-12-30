@@ -21,7 +21,7 @@
 #ifndef SOSELECTOR_H
 #define SOSELECTOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

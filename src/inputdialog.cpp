@@ -23,9 +23,9 @@
 
 #include <QtGui>
 #include <kiconloader.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <QPixmap>
-#include <kstandarddirs.h>
+#include "pathutils.h"
 
 InputDialog::InputDialog(QWidget *parent, bool integer, DialogType type, QString msg, double min, double max)
 {
@@ -210,7 +210,7 @@ InputDialog::InputDialog(QWidget *parent, bool integer, DialogType type, QString
   resize(362,158);
   //geom = geometry();
   //qDebug()<<"Geometry after resize:"<<geom;
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QPixmap pixm = QPixmap(path + Settings::styleName() + "/dialog.png");
   setMask( pixm.mask() );
   
@@ -233,7 +233,7 @@ void InputDialog::paintEvent(QPaintEvent *e)
   QPainter painter(this);
   painter.setClipRegion(e->region());
   
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QPixmap bg = QPixmap(path + Settings::styleName() + "/dialog.png");
   painter.drawPixmap(QPoint(0,0), bg);
 }

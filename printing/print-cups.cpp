@@ -23,7 +23,7 @@
 
 #include <QString>
 #include <QFont>
-#include <QtGui/QPrinter>
+#include <QPrinter>
 #include <QPainter>
 #include <QLocale>
 #include <QDebug>
@@ -1973,4 +1973,3 @@ bool PrintCUPS::printSmallSOTicket(const PrintTicketInfo &ptInfo, QPrinter &prin
   
   return result;
 }
-

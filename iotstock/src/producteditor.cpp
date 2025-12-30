@@ -17,10 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 #include <KMessageBox>
 #include <KFileDialog>
-#include <KStandardDirs>
+#include "pathutils.h"
+#include "../../src/localeutils.h"
 
 #include <QByteArray>
 #include <QRegExpValidator>
@@ -62,7 +63,7 @@ ProductEditor::ProductEditor( QWidget *parent, bool newProduct )
     setCaption( i18n("Product Editor") );
     setButtons( KDialog::Ok|KDialog::Cancel );
     
-    QString path = KStandardDirs::locate("appdata", "styles/");
+    QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
     errorPanel = new MibitTip(this, ui->editCode, path, DesktopIcon("dialog-warning", 32));
     errorPanel->setMaxHeight(65);
@@ -72,7 +73,7 @@ ProductEditor::ProductEditor( QWidget *parent, bool newProduct )
     errorVendorcode = new MibitTip(this, ui->editVendorcode, path, DesktopIcon("dialog-warning", 32));
     errorVendorcode->setMaxHeight(65);
     
-    path = KStandardDirs::locate("appdata", "styles/");
+    path = PathUtils::locateAppData("styles/");
     path = path+"floating_bottom.svg";
     groupPanel = new MibitFloatPanel(this, path, Bottom);
     groupPanel->setSize(460,250);
@@ -505,7 +506,7 @@ void ProductEditor::calculateProfit(QString amountStr)
         profit      = ( profitMoney / cost );
         
         //qDebug()<<" calculateProfit()  Profit % "<<profit<<" Profit $ "<<profitMoney<<" Price Without Taxes:"<<pWOtax<<" Cost + profit:"<<cost+profitMoney;
-        ui->lblProfit->setText(i18n("Gross Profit: %1% (%2)", QString::number(profit*100, 'f', 2) ,  KGlobal::locale()->formatMoney(profitMoney, QString(), 2) ));
+        ui->lblProfit->setText(i18n("Gross Profit: %1% (%2)", QString::number(profit*100, 'f', 2) ,  LocaleUtils::formatMoney(profitMoney, QString(), 2) ));
     } else {
         ui->lblProfit->clear();
     }
@@ -964,7 +965,7 @@ void ProductEditor::setGroupElements(ProductInfo pi)
   ui->editCost->setText(QString::number(groupInfo.cost));
   ui->editFinalPrice->setText(QString::number(groupInfo.price));
   ui->editExtraTaxes->setText("0.0");
-  ui->lblGPrice->setText(KGlobal::locale()->formatMoney(groupInfo.price, QString(), 2));
+  ui->lblGPrice->setText(LocaleUtils::formatMoney(groupInfo.price, QString(), 2));
   ui->editGroupPriceDrop->setValue(groupInfo.priceDrop);
 }
 
@@ -995,7 +996,7 @@ void ProductEditor::updatePriceDrop(double value)
     ui->editFinalPrice->setText(QString::number(groupInfo.price));
     ui->editExtraTaxes->setText("0.0");
     ui->editTax->setText(QString::number(groupInfo.tax));
-    ui->lblGPrice->setText(KGlobal::locale()->formatMoney(groupInfo.price, QString(), 2));
+    ui->lblGPrice->setText(LocaleUtils::formatMoney(groupInfo.price, QString(), 2));
     //update listview
     while (ui->groupView->rowCount() > 0) ui->groupView->removeRow(0);
     foreach(ProductInfo info, groupInfo.productsList) {
@@ -1052,7 +1053,7 @@ void ProductEditor::calculateGroupValues()
     qDebug()<<" <Calculating Values>  qtyOnList:"<<info.qtyOnList<<" tax money for product: "<<info.totaltax<<" group price:"<<groupInfo.price<<" taxMoney for group:"<<groupInfo.taxMoney<<" tax % for group:"<< groupInfo.tax;
   }
   ui->editTax->setText(QString::number(groupInfo.tax));
-  ui->lblGPrice->setText(KGlobal::locale()->formatMoney(groupInfo.price, QString(), 2));
+  ui->lblGPrice->setText(LocaleUtils::formatMoney(groupInfo.price, QString(), 2));
 }
 
 double ProductEditor::getGRoupStockMax()

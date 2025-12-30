@@ -21,7 +21,7 @@
 #ifndef PRICECHECKER_H
 #define PRICECHECKER_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QtGui>
 #include "ui_checker.h"
 

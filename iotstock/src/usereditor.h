@@ -21,7 +21,7 @@
 #ifndef USEREDITOR_H
 #define USEREDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QtGui>
 #include "ui_edituser_widget.h"
 

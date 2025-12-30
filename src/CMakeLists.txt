@@ -31,6 +31,9 @@ set(iotpos_SRCS
    dialogclientdata.cpp
    ../iotstock/src/clienteditor.cpp
    bundlelist.cpp
+   kdialogshim.cpp
+   localeutils.cpp
+   pathutils.cpp
    #printers/sp500.cpp
    BasketPriceCalculationService.cpp
    nouns/BasketEntryPriceSummary.cpp
@@ -41,8 +44,7 @@ set(iotpos_SRCS
 
 #qt4_add_dbus_adaptor(iotpos_SRCS org.kde.iotpos.iotpos.xml iotpos.h iotpos)
 
-
-kde4_add_ui_files( iotpos_SRCS
+qt5_wrap_ui(iotpos_SRCS
   ui/mainview.ui
   ui/prefs_base.ui
   ui/pref_printers.ui
@@ -60,15 +62,21 @@ kde4_add_ui_files( iotpos_SRCS
   ../iotstock/src/ui/editclient_widget.ui
   )
 
-kde4_add_kcfg_files(iotpos_SRCS settings.kcfgc )
+include(KConfigAddKcfgFiles)
+kconfig_add_kcfg_files(iotpos_SRCS settings.kcfgc)
 
-kde4_add_executable(iotpos ${iotpos_SRCS})
+add_executable(iotpos ${iotpos_SRCS})
 
 target_link_libraries(iotpos
-  ${KDE4_KDEUI_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${QT_LIBRARIES}
-  ${QT_QTSQL_LIBRARY}
+  KF5::CoreAddons
+  KF5::ConfigWidgets
+  KF5::I18n
+  KF5::KIOWidgets
+  KF5::WidgetsAddons
+  KF5::XmlGui
+  Qt5::PrintSupport
+  Qt5::Sql
+  Qt5::Widgets
 )
 
 FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
@@ -92,12 +100,12 @@ ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
                 ADD_CUSTOM_COMMAND(TARGET translations
                         COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_poFile}
                         DEPENDS ${_poFile})
-                INSTALL(FILES ${_gmoFile} DESTINATION ${LOCALE_INSTALL_DIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
+                INSTALL(FILES ${_gmoFile} DESTINATION ${KDE_INSTALL_LOCALEDIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
         ENDFOREACH(_poFile ${PO_FILES})
 
 ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
 
-install(TARGETS iotpos DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS iotpos DESTINATION ${KDE_INSTALL_BINDIR})
 
 ##### client #####
 #set(iotpos_client_SRCS
@@ -109,12 +117,11 @@ install(TARGETS iotpos DESTINATION ${BIN_INSTALL_DIR} )
 
 ########### install files ###############
 
-install( FILES iotpos.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
-install( FILES iotposui.rc     DESTINATION  ${DATA_INSTALL_DIR}/iotpos )
+install(FILES iotpos.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES iotposui.rc DESTINATION ${KDE_INSTALL_DATADIR}/iotpos)
 # With next line... the user needs to read/write the file...
-install( FILES iotposrc        DESTINATION  ${CONFIG_INSTALL_DIR} )
+install(FILES iotposrc DESTINATION ${KDE_INSTALL_CONFDIR})
 #install( FILES iotposrc        DESTINATION  ${HOME}/.kde/share/config/ )
-install( FILES iotpos.kcfg     DESTINATION  ${KCFG_INSTALL_DIR} )
+install(FILES iotpos.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
 #For KNotifications
-install( FILES iotpos.notifyrc DESTINATION ${DATA_INSTALL_DIR}/iotpos)
-
+install(FILES iotpos.notifyrc DESTINATION ${KDE_INSTALL_DATADIR}/iotpos)

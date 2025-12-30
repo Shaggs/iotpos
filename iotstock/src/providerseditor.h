@@ -20,7 +20,7 @@
 #ifndef PROVIDERSEDITOR_H
 #define PROVIDERSEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

@@ -20,7 +20,7 @@
 #ifndef DIALOGCLIENTDATA_H
 #define DIALOGCLIENTDATA_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QtGui>
 #include "ui_datoscliente.h"
 

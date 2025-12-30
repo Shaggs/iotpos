@@ -22,11 +22,7 @@
 #include "settings.h"
 #include "enums.h"
 
-#include <kapplication.h> 
-// #include <qpainter.h>
-
 #include <kdeversion.h>
-#include <kglobal.h>
 #include <kiconloader.h>
 #include <kmenubar.h>
 #include <kstatusbar.h>
@@ -35,8 +31,7 @@
 #include <kactioncollection.h>
 #include <kaction.h>
 #include <kstandardaction.h>
-#include <KLocale>
-#include <kstandarddirs.h>
+#include <QLocale>
 #include <KNotification>
 
 #include <ktoolbar.h>
@@ -53,6 +48,9 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QFileInfo>
+
+#include "localeutils.h"
+#include "pathutils.h"
 
 
 
@@ -371,7 +369,7 @@ void iotpos::loadStyle()
   qDebug()<<"Loading Stylesheet...";
   if (Settings::useStyle()) {
     QString fileName; QString path;
-    path = KStandardDirs::locate("appdata", "styles/");
+    path = PathUtils::locateAppData("styles/");
     fileName = path + Settings::styleName() + "/" + Settings::styleName() + ".qss";
     QFile file(fileName);
     bool op = file.open(QFile::ReadOnly);
@@ -384,7 +382,7 @@ void iotpos::loadStyle()
   else {
     //Load a simple style...
     QString fileName; QString path;
-    path = KStandardDirs::locate("appdata", "styles/");
+    path = PathUtils::locateAppData("styles/");
     fileName = path + Settings::styleName() + "/simple.qss";
     QFile file(fileName);
     bool op = file.open(QFile::ReadOnly);
@@ -701,7 +699,7 @@ void iotpos::enableConfig()
 
 void iotpos::populateStyleList()
 {
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QDir dir(path);
   dir.setFilter(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
   dir.setSorting(QDir::Name | QDir::LocaleAware);
@@ -744,7 +742,7 @@ void iotpos::updateClock()
 void iotpos::updateDate()
 {
   QDate dt = QDate::currentDate();
-  labelDate->setText(KGlobal::locale()->formatDate(dt));
+  labelDate->setText(LocaleUtils::formatDate(dt));
 }
 
 void iotpos::updateUserName()

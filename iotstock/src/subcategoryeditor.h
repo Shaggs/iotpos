@@ -21,7 +21,7 @@
 #ifndef SUBCATEGORYEDITOR_H
 #define SUBCATEGORYEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QtSql>

@@ -23,8 +23,8 @@
 #include <QtSql>
 #include <QMouseEvent>
 #include <QPaintEvent>
-#include <klocale.h>
-#include <kstandarddirs.h>
+#include <KLocalizedString>
+#include "pathutils.h"
 #include <kiconloader.h>
 
 #include "productdelegate.h"
@@ -40,9 +40,9 @@ void ProductDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     painter->setRenderHint(QPainter::Antialiasing);
     QString pixName;
     if (option.state & QStyle::State_Selected)
-      pixName = KStandardDirs::locate("appdata", "images/itemBox_selected.png");
+      pixName = PathUtils::locateAppData("images/itemBox_selected.png");
     else
-      pixName = KStandardDirs::locate("appdata", "images/itemBox.png");
+      pixName = PathUtils::locateAppData("images/itemBox.png");
 
     painter->drawPixmap(option.rect.x()+5,option.rect.y()+0, QPixmap(pixName));//only moves the itembox.png
 

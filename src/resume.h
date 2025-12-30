@@ -20,7 +20,7 @@
 #ifndef RESUME_H
 #define RESUME_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

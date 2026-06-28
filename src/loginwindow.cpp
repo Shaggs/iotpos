@@ -413,5 +413,3 @@ void LoginWindow::reloadUsers()
 {
     uHash = getUsers();
 }
-
-#include "loginwindow.moc"

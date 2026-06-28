@@ -80,7 +80,7 @@ SpecialOrderEditor::SpecialOrderEditor( QWidget *parent, bool newOne )
     connect( ui->btnRemove, SIGNAL(clicked()), SLOT(removeItem()) );
     connect( ui->groupView, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), SLOT(itemDoubleClicked(QTableWidgetItem*)) );
 
-    connect( ui->deliveryDT, SIGNAL(valueChanged(QDateTime)), this, SLOT(checkDate(QDateTime)) );
+    connect( ui->deliveryDT, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(checkDate(QDateTime)) );
 
     connect( ui->editNotes, SIGNAL(textChanged()), SLOT(updateNoteLength()) );
 

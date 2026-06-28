@@ -1,3 +1,6 @@
+#include <QMarginsF>
+#include <QPageLayout>
+#include <QPageSize>
 /**************************************************************************
  *   Copyright © 2007-2012 by Miguel Chavez Gamboa                         *
  *   hiramvillarreal.ap@gmail.com                                          *
@@ -210,7 +213,8 @@ void iotstockView::login(){
   }
   if (!db.isOpen()) {
     QString details = db.lastError().text();
-    KNotification *notify = new KNotification(i18n("Unable to connect to the database"), this);
+    KNotification *notify = new KNotification(i18n("Unable to connect to the database"));
+    notify->setWidget(this);
     notify->setText(details);
     QPixmap pixmap = themedPixmap("dialog-error",22); //NOTE: This does not works
     notify->setPixmap(pixmap);
@@ -625,7 +629,7 @@ void iotstockView::adjustProductsTable()
 {
   QSize size = ui_mainview.productsViewAlt->size();
   int portion = size.width()/11;
-  ui_mainview.productsViewAlt->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  ui_mainview.productsViewAlt->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   ui_mainview.productsViewAlt->horizontalHeader()->resizeSection(0, portion*1.5); // CODE
   ui_mainview.productsViewAlt->horizontalHeader()->resizeSection(1, portion*3.5); //Name
   ui_mainview.productsViewAlt->horizontalHeader()->resizeSection(2, portion); //Price
@@ -640,7 +644,7 @@ void iotstockView::adjustOffersTable()
 {
   QSize size = ui_mainview.tableBrowseOffers->size();
   int portion = size.width()/6;
-  ui_mainview.tableBrowseOffers->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  ui_mainview.tableBrowseOffers->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   ui_mainview.tableBrowseOffers->horizontalHeader()->resizeSection(1, portion*1.5); //PRODUCT DESC
   ui_mainview.tableBrowseOffers->horizontalHeader()->resizeSection(2, portion); //Qty
   ui_mainview.tableBrowseOffers->horizontalHeader()->resizeSection(3, portion); //Date start
@@ -3339,8 +3343,8 @@ void iotstockView::printGralEndOfDay()
         qDebug()<<fn;
         
         printer.setOutputFileName(fn);
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         
         PrintCUPS::printSmallEndOfDay(pdInfo, printer);
     }
@@ -3385,7 +3389,8 @@ void iotstockView::printEndOfDay()
     if (transactionsList.count() < 1) {
       //hey, if there are no transactions, why print it?
       qDebug()<<"Nothing to print!";
-      KNotification *notify = new KNotification(i18n("No transactions to print!"), this);
+      KNotification *notify = new KNotification(i18n("No transactions to print!"));
+      notify->setWidget(this);
       notify->setText(i18n("No transactions for  terminal #%1 for today.", terminalNum));
       QPixmap pixmap = themedPixmap("dialog-warning",22);
       notify->setPixmap(pixmap);
@@ -3471,8 +3476,8 @@ void iotstockView::printEndOfDay()
           qDebug()<<fn;
           
           printer.setOutputFileName(fn);
-          printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-          printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+          printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+          printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
           
           PrintCUPS::printSmallEndOfDay(pdInfo, printer);
       }
@@ -3580,8 +3585,8 @@ void iotstockView::printEndOfMonth()
         qDebug()<<fn;
         
         printer.setOutputFileName(fn);
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         
         PrintCUPS::printSmallEndOfDay(pdInfo, printer);
     }
@@ -3661,8 +3666,8 @@ void iotstockView::printLowStockProducts()
         qDebug()<<fn;
         
         printer.setOutputFileName(fn);
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         
         PrintCUPS::printSmallLowStockReport(plInfo, printer);
     }
@@ -3742,8 +3747,8 @@ void iotstockView::printStock()
             qDebug()<<fn;
             
             printer.setOutputFileName(fn);
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-            printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+            printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
             
             PrintCUPS::printSmallLowStockReport(plInfo, printer);
         }
@@ -3822,8 +3827,8 @@ void iotstockView::printSoldOutProducts()
         qDebug()<<fn;
         
         printer.setOutputFileName(fn);
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         
         PrintCUPS::printSmallLowStockReport(plInfo, printer);
     }
@@ -3998,8 +4003,8 @@ void iotstockView::printSelectedBalance()
             qDebug()<<fn;
             
             printer.setOutputFileName(fn);
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-            printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+            printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
             
             PrintCUPS::printSmallBalance(pbInfo, printer);
         }

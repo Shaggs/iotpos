@@ -78,6 +78,7 @@ endif()
 
 target_link_libraries(iotstock
   KF5::CoreAddons
+  KF5::Completion
   KF5::ConfigCore
   KF5::ConfigWidgets
   KF5::I18n

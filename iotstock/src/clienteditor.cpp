@@ -106,5 +106,3 @@ void ClientEditor::checkName()
         enableButtonOk(true);
   }
 }
-
-#include "clienteditor.moc"

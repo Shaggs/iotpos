@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         i18n("IotPOS"),
         QString::fromLatin1(version),
         i18n(description),
-        KAboutData::License_GPL,
+        KAboutLicense::GPL,
         i18n("(C) 2013-2017 Hiram Ronquillo Villarreal"),
         QString(),
         QString(),

@@ -51,9 +51,9 @@ class MibitDialog : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitDialog(QWidget *parent = 0, const QString &msg = 0, const QString &file = 0, const QPixmap &icon = 0, AnimationType animation = atSlideDown );
+    MibitDialog(QWidget *parent = nullptr, const QString &msg = QString(), const QString &file = QString(), const QPixmap &icon = QPixmap(), AnimationType animation = atSlideDown );
     ~MibitDialog();
-    void showDialog( const QString &msg = 0, AnimationType animation = atSlideDown );
+    void showDialog( const QString &msg = QString(), AnimationType animation = atSlideDown );
     // Tratar de hacer un metodo similar al QDialog::getDouble()... con static
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);

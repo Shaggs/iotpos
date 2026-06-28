@@ -953,5 +953,3 @@ void PurchaseEditor::createNewMeasure()
         delete myDb;
     }
 }
-
-#include "purchaseeditor.moc"

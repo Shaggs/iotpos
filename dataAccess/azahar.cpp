@@ -5106,7 +5106,3 @@ qulonglong  Azahar::insertCreditHistory(const CreditHistoryInfo &info)
     else result = query.lastInsertId().toULongLong();
     return result;
 }
-
-
-
-#include "azahar.moc"

@@ -194,5 +194,3 @@ QSize ProductDelegate::sizeHint(const QStyleOptionViewItem &optionUnused,
 {
   return QSize(150,150);
 }
-
-#include "productdelegate.moc"

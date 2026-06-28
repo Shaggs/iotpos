@@ -8,6 +8,7 @@ sudo apt-get install \
   extra-cmake-modules \
   gettext \
   g++ \
+  libkf5completion-dev \
   libkf5config-dev \
   libkf5configwidgets-dev \
   libkf5i18n-dev \
@@ -17,6 +18,7 @@ sudo apt-get install \
   libkf5widgetsaddons-dev \
   libkf5xmlgui-dev \
   libqt5sql5-mysql \
+  libqt5svg5-dev \
   qtbase5-dev \
   qttools5-dev \
   -y

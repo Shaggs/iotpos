@@ -10,14 +10,15 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOUIC OFF)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets Sql PrintSupport)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Sql PrintSupport Svg)
 find_package(
   KF5 REQUIRED
   COMPONENTS
     CoreAddons
+    Completion
     ConfigWidgets
     Config
     I18n

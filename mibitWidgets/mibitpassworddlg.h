@@ -52,7 +52,7 @@ class MibitPasswordDialog : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitPasswordDialog(QWidget *parent = 0, const QString &msg = 0, const QString &file = 0, const QPixmap &icon = 0, AnimationTypeP animation = atpSlideDown );
+    MibitPasswordDialog(QWidget *parent = nullptr, const QString &msg = QString(), const QString &file = QString(), const QPixmap &icon = QPixmap(), AnimationTypeP animation = atpSlideDown );
     ~MibitPasswordDialog();
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);
@@ -97,7 +97,7 @@ private slots:
 public slots:
     void shake();
     void wave();
-    void showDialog( const QString &msg = 0, AnimationTypeP animation = atpSlideDown );
+    void showDialog( const QString &msg = QString(), AnimationTypeP animation = atpSlideDown );
     void hideDialog();
 
 protected:

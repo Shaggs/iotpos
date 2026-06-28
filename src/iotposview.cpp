@@ -77,16 +77,16 @@
 #include <QMessageBox>
 #include <QLocale>
 
-#include <kplotobject.h>
-#include <kplotwidget.h>
-#include <kplotaxis.h>
-#include <kplotpoint.h>
+#include <KPlotObject>
+#include <KPlotWidget>
+#include <KPlotAxis>
+#include <KPlotPoint>
 
 
 #include <KLocalizedString>
 #include "iconutils.h"
 #include "pathutils.h"
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <KNotification>
 #include <QFile>
 #include <iostream>
@@ -6709,9 +6709,6 @@ BasketPriceSummary iotposView::recalculateBasket(double oDiscountMoney) {
 
     return summary;
 }
-
-#include "iotposview.moc"
-
 void iotposView::on_rbFilterByCategory_clicked()
 {
     ui_mainview.editItemCode->clear();

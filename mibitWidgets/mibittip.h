@@ -57,10 +57,10 @@ class MibitTip : public QSvgWidget
 {
   Q_OBJECT
   public:
-    explicit MibitTip( QWidget *parent = 0,
+    explicit MibitTip( QWidget *parent = nullptr,
                        QWidget *partner = 0,
-                       const QString &file = 0,
-                       const QPixmap &icon = 0,
+                       const QString &file = QString(),
+                       const QPixmap &icon = QPixmap(),
                        const TipPosition &drawOn = tpBelow );
     virtual ~MibitTip();
 

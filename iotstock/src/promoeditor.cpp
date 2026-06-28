@@ -193,6 +193,3 @@ void PromoEditor::setupModel()
     model->select();
   }
 }
-
-
-#include "promoeditor.moc"

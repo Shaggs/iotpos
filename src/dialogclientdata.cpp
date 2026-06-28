@@ -72,5 +72,3 @@ QString DialogClientData::getDireccion()
     QString t = ui->editDireccion->toPlainText();
     return t;
 }
-
-#include "dialogclientdata.moc"

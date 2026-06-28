@@ -26,7 +26,7 @@
 #include "ui_prefs_db.h"
 #include "ui_pref_printers.h"
 
-#include <kxmlguiwindow.h>
+#include <KXmlGuiWindow>
 
 #include <QDragEnterEvent>
 #include <QDropEvent>

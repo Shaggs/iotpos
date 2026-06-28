@@ -31,15 +31,15 @@
 #include <QDesktopWidget>
 
 #include "iconutils.h"
-#include <kmenubar.h>
-#include <kstatusbar.h>
-#include <kconfigdialog.h>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <KConfigDialog>
 //#include <kio/netaccess.h>
 // #include <QFileDialog>
-#include <kactioncollection.h>
+#include <KActionCollection>
 #include <QAction>
 #include <QLocale>
-#include <kled.h>
+#include <KLed>
 #include "pathutils.h"
 
 iotstock::iotstock()
@@ -538,5 +538,3 @@ void iotstock::salir()
 {
   qApp->quit();
 }
-
-#include "iotstock.moc"

@@ -67,15 +67,15 @@
 #include <KLocalizedString>
 #include <QFileDialog>
 #include "iconutils.h"
-#include <kmessagebox.h>
-#include <kactioncollection.h>
+#include <KMessageBox>
+#include <KActionCollection>
 #include <QAction>
 #include "pathutils.h"
 
-#include <kplotobject.h>
-#include <kplotwidget.h>
-#include <kplotaxis.h>
-#include <kplotpoint.h>
+#include <KPlotObject>
+#include <KPlotWidget>
+#include <KPlotAxis>
+#include <KPlotPoint>
 
 #include <KNotification>
 
@@ -303,7 +303,7 @@ void iotstockView::setupSignalConnections()
 
   connect(timerCheckDb, SIGNAL(timeout()), this, SLOT(checkDBStatus()));
   connect(timerUpdateGraphs, SIGNAL(timeout()), this, SLOT(updateGraphs()));
-  connect(ui_mainview.offersDateEditor, SIGNAL(changed(const QDate &)), this, SLOT(setOffersFilter()));
+  connect(ui_mainview.offersDateEditor, SIGNAL(dateChanged(const QDate &)), this, SLOT(setOffersFilter()));
 
   connect(this, SIGNAL(signalAdminLoggedOn()),  SLOT( enableUI()));
   connect(this, SIGNAL(signalAdminLoggedOff()),  SLOT( disableUI()));
@@ -321,7 +321,7 @@ void iotstockView::setupSignalConnections()
   connect(ui_mainview.rbTransFilterByPaidCredit, SIGNAL(toggled(bool)), this, SLOT( setTransactionsFilter()) );
   connect(ui_mainview.comboCardTypes, SIGNAL(currentIndexChanged(int)), this, SLOT( setTransactionsFilter()) );
   connect(ui_mainview.rbTransFilterByDate, SIGNAL(toggled(bool)), this, SLOT( setTransactionsFilter()) );
-  connect(ui_mainview.transactionsDateEditor, SIGNAL( changed(const QDate &) ), SLOT(setTransactionsFilter()));
+  connect(ui_mainview.transactionsDateEditor, SIGNAL( dateChanged(const QDate &) ), SLOT(setTransactionsFilter()));
   connect(ui_mainview.rbTransFilterByUser, SIGNAL(toggled(bool)), this, SLOT( setTransactionsFilter()) );
   connect(ui_mainview.editTransUsersFilter,SIGNAL(textEdited( const QString &)), this, SLOT( setTransactionsFilter()) );
   connect(ui_mainview.rbTransFilterByClient, SIGNAL(toggled(bool)), this, SLOT( setTransactionsFilter()) );
@@ -344,7 +344,7 @@ void iotstockView::setupSignalConnections()
   connect(ui_mainview.rbBalancesFilterByUser, SIGNAL(toggled(bool)), this, SLOT( setBalancesFilter()) );
   connect(ui_mainview.rbBalancesFilterByCashInLess, SIGNAL(toggled(bool)), this, SLOT( setBalancesFilter()) );
   connect(ui_mainview.rbBalancesFilterByCashInGrater, SIGNAL(toggled(bool)), this, SLOT( setBalancesFilter()) );
-  connect(ui_mainview.editBalancesFilterByDate, SIGNAL( changed(const QDate &) ), SLOT(setBalancesFilter()));
+  connect(ui_mainview.editBalancesFilterByDate, SIGNAL( dateChanged(const QDate &) ), SLOT(setBalancesFilter()));
   connect(ui_mainview.rbBalancesFilgerByTerminalNum, SIGNAL(toggled(bool)), this, SLOT( setBalancesFilter()) );
   connect(ui_mainview.editBalancesFilterByVendor,SIGNAL(textEdited( const QString &)), this, SLOT( setBalancesFilter()) );
   connect(ui_mainview.editBalancesFilterByCasInLess ,SIGNAL(valueChanged ( double ) ), this, SLOT( setBalancesFilter()) );
@@ -398,7 +398,7 @@ void iotstockView::setupSignalConnections()
   connect(ui_mainview.rbSOByStatusReady, SIGNAL(toggled(bool)), this, SLOT( setSpecialOrdersFilter()) );
   connect(ui_mainview.rbSOByStatusDelivered, SIGNAL( toggled(bool) ), SLOT(setSpecialOrdersFilter()));
   connect(ui_mainview.rbSOByStatusCancelled, SIGNAL(toggled(bool)), this, SLOT( setSpecialOrdersFilter()) );
-  connect(ui_mainview.datePicker,SIGNAL(changed(const QDate &)), this, SLOT( setSpecialOrdersFilter()) );
+  connect(ui_mainview.datePicker,SIGNAL(dateChanged(const QDate &)), this, SLOT( setSpecialOrdersFilter()) );
 
 
   connect(ui_mainview.btnAddCurrency, SIGNAL(clicked()), SLOT(createCurrency()));
@@ -4327,5 +4327,3 @@ void iotstockView::categoriesOnSelected(const QModelIndex &index)
         delete myDb;
     }
 }
-
-#include "iotstockview.moc"

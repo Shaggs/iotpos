@@ -67,8 +67,8 @@
 #include <KLocalizedString>
 #include <QFileDialog>
 #include "iconutils.h"
-#include <kmessagebox.h>
-#include <kactioncollection.h>
+#include <KMessageBox>
+#include <KActionCollection>
 #include <QAction>
 #include "pathutils.h"
 

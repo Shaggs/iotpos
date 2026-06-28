@@ -53,6 +53,9 @@
 // #include "printers/sp500.h"
 
 #include <QPrinter>
+#include <QMarginsF>
+#include <QPageLayout>
+#include <QPageSize>
 #include <QPrintDialog>
 #include <QWidget>
 #include <QStringList>
@@ -60,6 +63,7 @@
 #include <QColor>
 #include <QPixmap>
 #include <QHeaderView>
+#include <QCompleter>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QTextCodec>
@@ -605,7 +609,7 @@ void iotposView::setUpTable()
   ui_mainview.tableWidget->horizontalHeader()->setFixedHeight(24);
   int x = (QApplication::desktop()->width());
   if (x < 600){
-   ui_mainview.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+   ui_mainview.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
    ui_mainview.tableWidget->horizontalHeader()->resizeSection(colQty, (portion/1.5));  //QTY
    ui_mainview.tableWidget->horizontalHeader()->resizeSection(colUnits, (portion/3)+20);//UNITS
    ui_mainview.tableWidget->horizontalHeader()->resizeSection(colDesc, (portion*2.75)); //DESCRIPTION
@@ -615,7 +619,7 @@ void iotposView::setUpTable()
    ui_mainview.tableWidget->hideColumn(5);
   }
   else{
-      ui_mainview.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+      ui_mainview.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
       ui_mainview.tableWidget->horizontalHeader()->resizeSection(colCode, portion-20); //BAR CODE
       ui_mainview.tableWidget->horizontalHeader()->resizeSection(colQty, (portion/3)+10);  //QTY
       ui_mainview.tableWidget->horizontalHeader()->resizeSection(colUnits, (portion/3)+10);//UNITS
@@ -636,7 +640,7 @@ void iotposView::resizeSearchTable()
     QSize tableSize = ui_mainview.tableSearch->size();
 
     int portion = tableSize.width()/7;
-    ui_mainview.tableSearch->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+    ui_mainview.tableSearch->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(0, portion*1); //QTY
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(1, portion*2); //UNIT
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(2, portion*3); //DESCRIPTION
@@ -652,7 +656,7 @@ void iotposView::resizeSearchTableSmall()
     QSize tableSize = ui_mainview.tableSearch->size();
 
     int portion = tableSize.width()/5;
-    ui_mainview.tableSearch->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+    ui_mainview.tableSearch->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(0, portion*1); //QTY
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(1, portion*2); //UNIT
     ui_mainview.tableSearch->horizontalHeader()->resizeSection(2, portion*3); //DESCRIPTION
@@ -1168,7 +1172,8 @@ void iotposView::login()
   if (!db.isOpen()) {
     qDebug()<<"(login): Still unable to open connection to database....";
     QString msg = i18n("Could not connect to database, please press 'login' button again to raise a database configuration.");
-    KNotification *notify = new KNotification(QStringLiteral("databaseError"), this);
+    KNotification *notify = new KNotification(QStringLiteral("databaseError"));
+    notify->setWidget(this);
     notify->setTitle(i18n("Error"));
     notify->setText(msg);
     notify->setIconName(QStringLiteral("dialog-error"));
@@ -1679,7 +1684,8 @@ void iotposView::insertItem(QString code)
   }
 
   if ( !specialOrders.isEmpty() ) {
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("Only Special Orders can be added. Please finish the current special order before adding any other product."));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -1690,7 +1696,8 @@ void iotposView::insertItem(QString code)
 
 qDebug()<< __FUNCTION__ <<" doNotAddMoreItems = "<<doNotAddMoreItems;
 if ( doNotAddMoreItems ) { //only for reservations
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("Cannot Add more items to the Reservation."));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -2142,7 +2149,8 @@ int iotposView::doInsertItem(QString itemCode, QString itemDesc, double itemQty,
 void iotposView::deleteSelectedItem()
 {
   if (startingReservation || finishingReservation) {
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      notify->setWidget(this);
       notify->setText(i18n("Cannot delete items from a reservation."));
       QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
@@ -3036,7 +3044,8 @@ void iotposView::finishCurrentTransaction()
     }
     else {
        //KMessageBox::error(this, i18n("The Drawer is not initialized, please start operation first."), i18n("Error") );
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      notify->setWidget(this);
       notify->setText(i18n("The Drawer is not initialized, please start operation first."));
       QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
@@ -3129,7 +3138,9 @@ void iotposView::finishCurrentTransaction()
     //Check level of cash in drawer
     if (drawer->getAvailableInCash() < Settings::cashMinLevel() && Settings::displayWarningOnLowCash()) {
       
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      
+      notify->setWidget(this);
       notify->setText(i18n("Cash level in drawer is low."));
       QPixmap pixmap = themedPixmap("dialog-warning",32); //NOTE: This does not works
       notify->setPixmap(pixmap);
@@ -3158,7 +3169,8 @@ void iotposView::printTicket(TicketInfo ticket)
 {
   if (ticket.total == 0 && !Settings::printZeroTicket()) {
     freezeWidgets();
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("The ticket was not printed because it is ZERO in the amount to pay. Just to save trees."));
     QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
@@ -3452,8 +3464,8 @@ void iotposView::printTicket(TicketInfo ticket)
       printer.setFullPage( true );
 
       //This is lost when the user chooses a printer. Because the printer overrides the paper sizes.
-      printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-      //TODO:Nueva impresora. printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+      printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+      //TODO:Nueva impresora. printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
       //NOTE: Ojo: si se hace click en el boton "Properties" del dialogo de Imprimir, aunque se presione "cancel", el "PAGE" se pone como 204mm
       //NOTE: El calculo del tamano de fuente no es correcta para papeles mayores a 72mm de anchos.
 
@@ -3465,8 +3477,8 @@ ptInfo.totDisc = discMoney;
 ptInfo.tDisc = LocaleUtils::formatMoney(-discMoney, QString(), 2);
       if ( printDialog.exec() ) {
         //this overrides what the user chooses if he does change sizes and margins.
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        //printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        //printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         //TODO: Set Copies: printer.setCopyCount(2); //NOTE:Introduced in Qt 4.7 --WARNING-- See also setCollateCopies()
         PrintCUPS::printSmallTicket(ptInfo, printer);
 
@@ -3479,7 +3491,7 @@ ptInfo.tDisc = LocaleUtils::formatMoney(-discMoney, QString(), 2);
         qDebug()<<fn;
 
         printer.setOutputFileName(fn);
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
 
         PrintCUPS::printSmallTicket(ptInfo, printer);
       } else {
@@ -3495,8 +3507,8 @@ ptInfo.tDisc = LocaleUtils::formatMoney(-discMoney, QString(), 2);
           qDebug()<<fn;
 
           printer.setOutputFileName(fn);
-          printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-          printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+          printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+          printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
 
           PrintCUPS::printSmallTicket(ptInfo, printer);
       }
@@ -3762,7 +3774,8 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
   //Check if payment was with cash.
   //FIXME: Allow card payments to be cancelled!!! DIC 2009
   if (tinfo.paymethod != 1 ) {
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("The ticket cannot be cancelled because it was paid with a credit/debit card."));
     QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
@@ -3784,7 +3797,8 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
           if (Settings::openDrawer() && Settings::smallTicketDotMatrix() && Settings::printTicket()) drawer->open();
         }
         //Inform to the user.
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("The ticket was sucessfully cancelled."));
         QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
@@ -3796,7 +3810,8 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
     else { //myDB->cancelTransaction() returned some error...
       qDebug()<<"Not cancelled!";
       if (!transToCancelIsInProgress) {
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("Error cancelling ticket: %1",myDb->lastError()));
         QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
@@ -3825,7 +3840,9 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
     else
       msg = i18n("Ticket to cancel does not exists!");
 
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+
+    notify->setWidget(this);
     notify->setText(msg);
     QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
@@ -4196,8 +4213,8 @@ void iotposView::corteDeCaja()
       QPrintDialog printDialog( &printer );
       printDialog.setWindowTitle(i18n("Print Balance"));
       if ( printDialog.exec() ) {
-        printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-        //TODO:Nueva impresora. printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+        printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+        //TODO:Nueva impresora. printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
         //NOTE: Ojo: si se hace click en el boton "Properties" del dialogo de Imprimir, aunque se presione "cancel", el "PAGE" se pone como 204mm
         //NOTE: El calculo del tamano de fuente no es correcta para papeles mayores a 72mm de anchos.
 
@@ -4216,8 +4233,8 @@ void iotposView::corteDeCaja()
           qDebug()<<fn;
 
           printer.setOutputFileName(fn);
-          printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-          printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+          printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+          printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
 
           PrintCUPS::printSmallBalance(pbInfo, printer);
       }
@@ -4390,8 +4407,8 @@ if (Settings::printZeroTicket()) {
           qDebug()<<fn;
 
           printer.setOutputFileName(fn);
-          printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-          printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter); //setting small ticket paper size. 72mm x 200mm
+          printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+          printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter)); //setting small ticket paper size. 72mm x 200mm
 
           PrintCUPS::printSmallEndOfDay(pdInfo, printer);
       }
@@ -4849,7 +4866,7 @@ void iotposView::setupTicketView()
   historyTicketsModel->select();
   QSize tableSize = ui_mainview.ticketView->size();
   int portion = tableSize.width()/7;
-  ui_mainview.ticketView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+  ui_mainview.ticketView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
   ui_mainview.ticketView->horizontalHeader()->resizeSection(historyTicketsModel->fieldIndex("id"), portion);
   ui_mainview.ticketView->horizontalHeader()->resizeSection(historyTicketsModel->fieldIndex("name"), portion);
   ui_mainview.ticketView->horizontalHeader()->resizeSection(historyTicketsModel->fieldIndex("datetime"), portion);
@@ -4896,7 +4913,8 @@ void iotposView::printSelTicket()
     else {
         //show a notification.
         qDebug()<<"No administrator password supplied for reprint ticket";
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("Reprint ticket cancelled."));
         QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
@@ -5057,10 +5075,13 @@ void iotposView::cashOut()
 
   if (doit) {
     double max = drawer->getAvailableInCash();
-    if (!max>0) {
+    if (max <= 0) {
       
 
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      
+
+      notify->setWidget(this);
       notify->setText(i18n("Cash not available at drawer!"));
       QPixmap pixmap = themedPixmap("dialog-error",32);
       notify->setPixmap(pixmap);
@@ -5142,7 +5163,8 @@ void iotposView::cashIn()
 void iotposView::cashAvailable()
 {
   double available = drawer->getAvailableInCash();
-  KNotification *notify = new KNotification("information", this);
+  KNotification *notify = new KNotification("information");
+  notify->setWidget(this);
   notify->setText(i18n("There are <b> %1 in cash </b> available at the drawer.", LocaleUtils::formatMoney(available)));
   QPixmap pixmap = themedPixmap("dialog-information",32);
   notify->setPixmap(pixmap);
@@ -5163,7 +5185,8 @@ void iotposView::log(const qulonglong &uid, const QDate &date, const QTime &time
 void iotposView::addSpecialOrder()
 {
   if ( transactionInProgress && (totalSum >0) && specialOrders.isEmpty() ) {
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("Please finish the current transaction before creating a special order."));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -5268,7 +5291,8 @@ void iotposView::specialOrderComplete()
 {
   //first ensure we have no pending transaction
   if ( transactionInProgress && (totalSum >0) ) {
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("Please finish the current transaction before completing a special order."));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -5285,7 +5309,8 @@ void iotposView::specialOrderComplete()
     myDb->setDatabase(db);
     QList<SpecialOrderInfo> soList = myDb->getAllSOforSale(tNum);
     if (soList.isEmpty()) {
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      notify->setWidget(this);
       notify->setText(i18n("The given ticket number does not contains any special order."));
       QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
@@ -5313,7 +5338,8 @@ void iotposView::specialOrderComplete()
           soCompletePayments++;
           myDb->specialOrderSetStatus(soInfo.orderid, stDelivered);
           qDebug()<<"This special order is completeley paid and marked as delivered without emiting a ticket.";
-          KNotification *notify = new KNotification("information", this);
+          KNotification *notify = new KNotification("information");
+          notify->setWidget(this);
           notify->setText(i18n("The special order %1 in ticket %2 is completely paid. Marked as delivered.", soInfo.orderid, soInfo.saleid));
           QPixmap pixmap = themedPixmap("dialog-information",32);
           notify->setPixmap(pixmap);
@@ -5374,7 +5400,8 @@ void iotposView::specialOrderComplete()
     refreshTotalLabel();
 
     if (paidOrders.count()> 1) { // the first is the pre-message
-      KNotification *notify = new KNotification("information", this);
+      KNotification *notify = new KNotification("information");
+      notify->setWidget(this);
       notify->setText(paidOrders.join("\n"));
       QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
@@ -5587,7 +5614,8 @@ void iotposView::suspendSale()
     }
 
     //inform the user
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("The sale %1 has been sucessfully suspended.", tmpId));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -5670,7 +5698,8 @@ void iotposView::resumeSale()
 void iotposView::changeSOStatus()
 {
   if ( transactionInProgress && (totalSum >0) ) {
-    KNotification *notify = new KNotification("information", this);
+    KNotification *notify = new KNotification("information");
+    notify->setWidget(this);
     notify->setText(i18n("Please finish the current transaction before changing state for a special order."));
     QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
@@ -5874,7 +5903,8 @@ void iotposView::reserveItems()
 
         if (rInfo.payment <= 0) {
             //TODO: Replace this notify with a mibitLineEdit->VIBRAR, y mibitTip
-            KNotification *notify = new KNotification("information", this);
+            KNotification *notify = new KNotification("information");
+            notify->setWidget(this);
             notify->setText(i18n("Please Enter the reservation Amount in the Payment Amount and try again."));
             QPixmap pixmap = themedPixmap("dialog-information",32);
             notify->setPixmap(pixmap);
@@ -5987,11 +6017,12 @@ void iotposView::reserveItems()
         ticket.datetime = QDateTime::currentDateTime(); //NOTE:Reservations are not DATE CHANGEABLE.
 
         QString realSubtotal;
-        if (Settings::addTax())
+        if (Settings::addTax()) {
             realSubtotal = LocaleUtils::formatMoney(subTotalSum-discMoney+pDiscounts, QString(), 2);
-        else
+        } else {
             realSubtotal = LocaleUtils::formatMoney(subTotalSum-totalTax+discMoney+pDiscounts, QString(), 2); //FIXME: es +discMoney o -discMoney??
-            qDebug()<<"\n********** Total Taxes:"<<totalTax<<" total Discount:"<<discMoney<<" Prod Discounts:"<<pDiscounts;
+        }
+        qDebug()<<"\n********** Total Taxes:"<<totalTax<<" total Discount:"<<discMoney<<" Prod Discounts:"<<pDiscounts;
 
         ticket.number = currentTransaction;
         ticket.subTotal = realSubtotal; //This is the subtotal-taxes-discount
@@ -6027,7 +6058,8 @@ void iotposView::reserveItems()
 
     } else {
         //Cannot reserve empty product list!
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("Cannot make a reservation, no products on the list. Special Orders are not considered."));
         QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
@@ -6052,7 +6084,8 @@ void iotposView::suspendReservation()
         // clear widgets
         startAgain();
         //inform the user
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("The sale %1 has been sucessfully reserved.", tmpId));
         QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
@@ -6158,7 +6191,8 @@ void iotposView::addReservationPayment()
 {
     //This is used to add payments to a reservation without totally paying it.
     if (finishingReservation || startingReservation) {
-        KNotification *notify = new KNotification("information", this);
+        KNotification *notify = new KNotification("information");
+        notify->setWidget(this);
         notify->setText(i18n("You need to finish or suspend the current sale or reservation before adding a payment for a reservation."));
         QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
@@ -6470,14 +6504,14 @@ void iotposView::printCreditReport()
         if (Settings::smallTicketCUPS()) {
             QPrinter printer(QPrinter::HighResolution);
             printer.setFullPage( true );
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
 
             qDebug()<<"-Paper Width: "<<printer.widthMM()<<"mm"<<"; Page Width: "<<printer.width();
             //NOTE: I dont know why the printer reports a paper width of 210mm (that is a A4/Letter width).
             //      Why, why?.. even the default printer is the TSP800.
 
             if (printer.widthMM() > 150)
-                printer.setPaperSize(QSizeF(104,110), QPrinter::Millimeter); // Resetting to 104mm (4 inches) paper.
+                printer.setPageSize(QPageSize(QSizeF(104,110), QPageSize::Millimeter)); // Resetting to 104mm (4 inches) paper.
 
             qDebug()<<"+Paper Width: "<<printer.widthMM()<<"mm"<<"; Page Width: "<<printer.width();
 
@@ -6492,15 +6526,15 @@ void iotposView::printCreditReport()
             qDebug()<<" Exporting credit report to:"<<fn;
             printer.setOutputFileName(fn);
             printer.setOutputFormat(QPrinter::PdfFormat);
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
-            printer.setPaperSize(QSizeF(72,200), QPrinter::Millimeter);
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
+            printer.setPageSize(QPageSize(QSizeF(72,200), QPageSize::Millimeter));
             ui_mainview.creditContent->print(&printer);
         }
          else if (Settings::printZeroTicket()) {
         // Send to spool file
 		 QPrinter printer(QPrinter::HighResolution);
             printer.setFullPage( true );
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
             qDebug()<<"-Paper Widt: "<<printer.widthMM()<<"mm"<<"; Page Widt: "<<printer.width();
 			ui_mainview.creditContent->print(&printer);
 
@@ -6511,7 +6545,7 @@ void iotposView::printCreditReport()
 		  // TODO: GET DIALOG BOX UP.
 		 QPrinter printer(QPrinter::HighResolution);
             printer.setFullPage( true );
-            printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
+            printer.setPageMargins(QMarginsF(), QPageLayout::Millimeter);
             qDebug()<<"-Paper Widt: "<<printer.widthMM()<<"mm"<<"; Page Widt: "<<printer.width();
 		  ui_mainview.creditContent->print(&printer);
 

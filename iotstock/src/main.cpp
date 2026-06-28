@@ -42,7 +42,7 @@ int main(int argc, char **argv)
         i18n("IotStock"),
         QString::fromLatin1(version),
         i18n(description),
-        KAboutData::License_GPL,
+        KAboutLicense::GPL,
         i18n("(C) 2007-2011 Miguel Chavez Gamboa"),
         QString(),
         QString(),

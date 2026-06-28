@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         i18n("(C) 2007-2011 Miguel Chavez Gamboa"),
         QString(),
         QString(),
-        QStringLiteral("miguel@iotpospos.org")
+        "miguel@iotpospos.org"
     );
     about.addAuthor( i18n("Miguel Chavez Gamboa"), QString(), QStringLiteral("miguel@iotpospos.org") );
     about.setBugAddress("bugs.iotstock@iotpospos.org");

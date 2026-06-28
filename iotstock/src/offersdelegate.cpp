@@ -82,5 +82,3 @@ QWidget *OffersDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
     return editor;
   }
 }
-
-#include "offersdelegate.moc"

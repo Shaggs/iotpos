@@ -114,5 +114,3 @@ QSize UsersDelegate::sizeHint(const QStyleOptionViewItem &optionUnused,
 {
   return QSize(170,170);
 }
-
-#include "usersdelegate.moc"

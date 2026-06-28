@@ -36,6 +36,7 @@ static const char version[] = "0.9.6.0 | March 04, 2013";
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
+    KLocalizedString::setApplicationDomain("iotstock");
     KAboutData about(
         QStringLiteral("iotstock"),
         i18n("IotStock"),

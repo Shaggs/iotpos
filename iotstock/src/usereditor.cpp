@@ -111,5 +111,3 @@ void UserEditor::disallowAdminChange(const bool &yes)
       ui->setDisabled(yes); //everything
     }
 }
-
-#include "usereditor.moc"

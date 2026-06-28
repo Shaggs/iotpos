@@ -8,6 +8,7 @@ sudo apt-get install \
   extra-cmake-modules \
   gettext \
   g++ \
+  libkf5completion-dev \
   libkf5config-dev \
   libkf5configwidgets-dev \
   libkf5i18n-dev \

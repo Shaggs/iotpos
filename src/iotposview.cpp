@@ -77,10 +77,10 @@
 #include <QMessageBox>
 #include <QLocale>
 
-#include <kplotobject.h>
-#include <kplotwidget.h>
-#include <kplotaxis.h>
-#include <kplotpoint.h>
+#include <KPlotObject>
+#include <KPlotWidget>
+#include <KPlotAxis>
+#include <KPlotPoint>
 
 
 #include <KLocalizedString>

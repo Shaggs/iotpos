@@ -19,8 +19,9 @@
  ***************************************************************************/
 #include <QLocale>
 #include <KMessageBox>
-#include <KFileDialog>
+#include <QFileDialog>
 #include "pathutils.h"
+#include "iconutils.h"
 #include "../../src/localeutils.h"
 
 #include <QByteArray>
@@ -65,12 +66,12 @@ ProductEditor::ProductEditor( QWidget *parent, bool newProduct )
     
     QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
-    errorPanel = new MibitTip(this, ui->editCode, path, DesktopIcon("dialog-warning", 32));
+    errorPanel = new MibitTip(this, ui->editCode, path, themedPixmap("dialog-warning", 32));
     errorPanel->setMaxHeight(65);
 
-    errorAlphacode = new MibitTip(this, ui->editAlphacode, path, DesktopIcon("dialog-warning", 32));
+    errorAlphacode = new MibitTip(this, ui->editAlphacode, path, themedPixmap("dialog-warning", 32));
     errorAlphacode->setMaxHeight(65);
-    errorVendorcode = new MibitTip(this, ui->editVendorcode, path, DesktopIcon("dialog-warning", 32));
+    errorVendorcode = new MibitTip(this, ui->editVendorcode, path, themedPixmap("dialog-warning", 32));
     errorVendorcode->setMaxHeight(65);
     
     path = PathUtils::locateAppData("styles/");
@@ -82,8 +83,8 @@ ProductEditor::ProductEditor( QWidget *parent, bool newProduct )
     groupPanel->setHiddenTotally(true);
     ui->btnShowGroup->setDisabled(true);
 
-    ui->btnChangeCode->setIcon(QIcon(DesktopIcon("edit-clear", 32)));
-    ui->printBC->setIcon(QIcon(DesktopIcon("iotpos-tag", 32)));
+    ui->btnChangeCode->setIcon(QIcon(themedPixmap("edit-clear", 32)));
+    ui->printBC->setIcon(QIcon(themedPixmap("iotpos-tag", 32)));
     //Set Validators for input boxes
     QRegExp regexpC("[0-9]{1,13}"); //(EAN-13 y EAN-8) .. y productos sin codigo de barras?
     QRegExpValidator * validatorEAN13 = new QRegExpValidator(regexpC, this);
@@ -423,7 +424,7 @@ QString ProductEditor::getMeasureStr(int c)
 
 void ProductEditor::changePhoto()
 {
- QString fname = KFileDialog::getOpenFileName();
+ QString fname = QFileDialog::getOpenFileName();
   if (!fname.isEmpty()) {
     QPixmap p = QPixmap(fname);
     setPhoto(p);

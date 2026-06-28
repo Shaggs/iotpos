@@ -231,5 +231,3 @@ void ProvidersEditor::setProviderId(qulonglong id)
   m_model->setFilter(QString("provider_id=%1").arg(m_pInfo.id));
   m_model->select();
 }
-
-#include "providerseditor.moc"

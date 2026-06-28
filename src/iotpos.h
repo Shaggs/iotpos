@@ -25,7 +25,7 @@
 #include <config.h>
 #endif
 
-#include <kxmlguiwindow.h>
+#include <KXmlGuiWindow>
 
 #include "ui_prefs_base.h"
 #include "ui_store_data.h"

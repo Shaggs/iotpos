@@ -19,8 +19,9 @@
  ***************************************************************************/
 #include <QLocale>
 #include <KMessageBox>
-#include <KFileDialog>
+#include <QFileDialog>
 #include "localeutils.h"
+#include "iconutils.h"
 #include "pathutils.h"
 
 #include <QByteArray>
@@ -92,9 +93,9 @@ SpecialOrderEditor::SpecialOrderEditor( QWidget *parent, bool newOne )
     //tip
     QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
-    qtyTip   = new MibitTip(this, ui->editQty, path, DesktopIcon("dialog-warning",32) );
+    qtyTip   = new MibitTip(this, ui->editQty, path, themedPixmap("dialog-warning",32) );
     path = PathUtils::locateAppData("styles/")+"rotated_tip.svg";
-    groupTip = new MibitTip(this, ui->groupView, path, DesktopIcon("dialog-warning",32), tpAbove );
+    groupTip = new MibitTip(this, ui->groupView, path, themedPixmap("dialog-warning",32), tpAbove );
 
     path = PathUtils::locateAppData("styles/");
     path = path+"floating_bottom.svg";

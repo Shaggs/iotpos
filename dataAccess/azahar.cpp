@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QByteArray>
 #include "azahar.h"
-#include <klocale.h>
+#include <KLocalizedString>
 
 Azahar::Azahar(QWidget * parent): QObject(parent)
 {

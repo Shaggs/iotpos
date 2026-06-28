@@ -86,7 +86,7 @@
 #include <KLocalizedString>
 #include "iconutils.h"
 #include "pathutils.h"
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <KNotification>
 #include <QFile>
 #include <iostream>

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(iotpos)
 
 find_package(ECM REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -19,9 +19,11 @@ find_package(
   COMPONENTS
     CoreAddons
     ConfigWidgets
-    ConfigCore
+    Config
     I18n
     KIO
+    Notifications
+    Plotting
     WidgetsAddons
     XmlGui
 )

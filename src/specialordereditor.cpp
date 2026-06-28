@@ -652,5 +652,3 @@ void SpecialOrderEditor::updateNoteLength()
     ui->editNotes->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
   }
 }
-
-#include "specialordereditor.moc"

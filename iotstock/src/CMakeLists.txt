@@ -24,9 +24,12 @@ set(iotstock_SRCS
    ../../mibitWidgets/mibitnotifier.cpp
    ../../printing/print-dev.cpp
    ../../printing/print-cups.cpp
+   ../../src/kdialogshim.cpp
+   ../../src/localeutils.cpp
+   ../../src/pathutils.cpp
  )
 
-kde4_add_ui_files( iotstock_SRCS
+qt5_wrap_ui(iotstock_SRCS
   ui/iotstockview_base.ui
   ui/prefs_base.ui
   ui/prefs_db.ui
@@ -40,9 +43,10 @@ kde4_add_ui_files( iotstock_SRCS
   )
 
 
-kde4_add_kcfg_files(iotstock_SRCS settings.kcfgc )
+include(KConfigAddKcfgFiles)
+kconfig_add_kcfg_files(iotstock_SRCS settings.kcfgc)
 
-kde4_add_executable(iotstock ${iotstock_SRCS})
+add_executable(iotstock ${iotstock_SRCS})
 
 FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
@@ -65,26 +69,29 @@ ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
                 ADD_CUSTOM_COMMAND(TARGET translations
                         COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_poFile}
                         DEPENDS ${_poFile})
-                INSTALL(FILES ${_gmoFile} DESTINATION ${LOCALE_INSTALL_DIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
+                INSTALL(FILES ${_gmoFile} DESTINATION ${KDE_INSTALL_LOCALEDIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
         ENDFOREACH(_poFile ${PO_FILES})
 
 ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
 
 target_link_libraries(iotstock
-  ${KDE4_KDEUI_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${QT_LIBRARIES}
-  ${QT_QTSQL_LIBRARY}
-  #${KDE4_KDEPRINT_LIBS}
+  KF5::CoreAddons
+  KF5::ConfigWidgets
+  KF5::I18n
+  KF5::KIOWidgets
+  KF5::WidgetsAddons
+  KF5::XmlGui
+  Qt5::PrintSupport
+  Qt5::Sql
+  Qt5::Widgets
 )
 
-install(TARGETS iotstock DESTINATION ${BIN_INSTALL_DIR} )
+install(TARGETS iotstock DESTINATION ${KDE_INSTALL_BINDIR})
 
 ########### install files ###############
 
-install( FILES iotstock.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
-install( FILES iotstockui.rc  DESTINATION  ${DATA_INSTALL_DIR}/iotstock )
-install( FILES iotstock.kcfg  DESTINATION  ${KCFG_INSTALL_DIR} )
+install(FILES iotstock.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES iotstockui.rc DESTINATION ${KDE_INSTALL_DATADIR}/iotstock)
+install(FILES iotstock.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
 #For KNotifications
-install( FILES iotstock.notifyrc DESTINATION ${DATA_INSTALL_DIR}/iotstock)
-
+install(FILES iotstock.notifyrc DESTINATION ${KDE_INSTALL_DATADIR}/iotstock)

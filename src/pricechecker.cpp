@@ -17,12 +17,13 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 
 #include <QByteArray>
 #include <QPixmap>
 
-#include <kstandarddirs.h>
+#include "localeutils.h"
+#include "pathutils.h"
 #include "settings.h"
 
 #include "pricechecker.h"
@@ -51,7 +52,7 @@ PriceChecker::PriceChecker( QWidget *parent )
   ui->labelPClPrice->setText(i18n("Regular price:"));
   ui->labelPClTotal->setText(i18n("Final price:"));
   ui->labelPClDiscount->setText(i18n("Discount:"));
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QPixmap pix = QPixmap(path + Settings::styleName() + "/priceCheckerBack.png");
   resize(517,309);
   setMask( pix.mask() );
@@ -80,7 +81,7 @@ void PriceChecker::paintEvent(QPaintEvent* event){
   QDialog::paintEvent(event);
   QPainter painter(this);
   painter.setClipRegion(event->region());
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QPixmap bg = QPixmap(path + Settings::styleName() + "/priceCheckerBack.png");
   painter.drawPixmap(QPoint(0,0), bg);
 }
@@ -94,12 +95,12 @@ void PriceChecker::checkIt()
 {
   ProductInfo info = myDb->getProductInfo(ui->editCode->text());
   ui->labelPCName->setText(info.desc);
-  ui->labelPCPrice->setText(KGlobal::locale()->formatMoney(info.price));
-  if (info.validDiscount) ui->labelPCDiscount->setText(KGlobal::locale()->formatMoney(-info.disc));
-  else ui->labelPCDiscount->setText(KGlobal::locale()->formatMoney(0.0));
+  ui->labelPCPrice->setText(LocaleUtils::formatMoney(info.price));
+  if (info.validDiscount) ui->labelPCDiscount->setText(LocaleUtils::formatMoney(-info.disc));
+  else ui->labelPCDiscount->setText(LocaleUtils::formatMoney(0.0));
   double total = info.price;
   if (info.validDiscount) total = info.price - info.disc;
-  ui->labelPCTotal->setText(KGlobal::locale()->formatMoney(total));
+  ui->labelPCTotal->setText(LocaleUtils::formatMoney(total));
   QPixmap pix;
   pix.loadFromData(info.photo);
   ui->labelPhoto->setPixmap(pix);

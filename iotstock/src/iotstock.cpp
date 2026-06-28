@@ -31,7 +31,6 @@
 #include <QDesktopWidget>
 
 #include <kdeversion.h>
-#include <kglobal.h>
 #include <kiconloader.h>
 #include <kmenubar.h>
 #include <kstatusbar.h>
@@ -40,9 +39,9 @@
 // #include <kfiledialog.h>
 #include <kactioncollection.h>
 #include <kaction.h>
-#include <KLocale>
+#include <QLocale>
 #include <kled.h>
-#include <kstandarddirs.h>
+#include "pathutils.h"
 
 iotstock::iotstock()
     //: KXmlGuiWindow(0,Qt::FramelessWindowHint ),
@@ -138,7 +137,7 @@ void iotstock::loadStyle()
 
     //Load a simple style...
     QString fileName; QString path;
-    path = KStandardDirs::locate("appdata", "styles/");
+    path = PathUtils::locateAppData("styles/");
     fileName = path + Settings::styleName() + "/simple.qss";
     qDebug()<<"Style file:"<<fileName;
     QFile file(fileName);

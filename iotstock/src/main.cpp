@@ -21,10 +21,10 @@
 
 
 #include "iotstock.h"
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QApplication>
+#include <QCommandLineParser>
 
 
 static const char description[] =
@@ -34,10 +34,11 @@ static const char version[] = "0.9.6.0 | March 04, 2013";
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv);
     KAboutData about("iotstock", 0, ki18n("IotStock"), version, ki18n(description), KAboutData::License_GPL, ki18n("(C) 2007-2011 Miguel Chavez Gamboa"), KLocalizedString(), 0, "miguel@iotpospos.org");
     about.addAuthor( ki18n("Miguel Chavez Gamboa"), KLocalizedString(), "miguel@iotpospos.org" );
     about.setBugAddress("bugs.iotstock@iotpospos.org");
-    KCmdLineArgs::init(argc, argv, &about);
+    KAboutData::setApplicationData(about);
 
     about.addCredit(ki18n("Roberto Aceves"), ki18n("Many ideas and general help"));
     about.addCredit(ki18n("Biel Frontera"), ki18n("Code contributor"));
@@ -45,37 +46,13 @@ int main(int argc, char **argv)
     about.addCredit(ki18n("Jose Nivar"), ki18n("Many ideas, bug reports and testing"));
     about.addCredit(ki18n("Benjamin Burt"), ki18n("Many ideas, Documentation Writer, How-to Videos Creation, and general help and support"));
 
-    KCmdLineOptions options;
-    options.add("+[URL]", ki18n( "Document to open" ));
-    KCmdLineArgs::addCmdLineOptions(options);
-    KApplication app;
+    QCommandLineParser parser;
+    about.setupCommandLine(&parser);
+    parser.process(app);
+    about.processCommandLine(&parser);
 
-    // register ourselves as a dcop client
-    //app.dcopClient()->registerAs(app.name(), false);
-
-    // see if we are starting with session management
-    if (app.isSessionRestored())
-        RESTORE(iotstock)
-    else
-    {
-        // no session.. just start up normally
-        KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-        if (args->count() == 0)
-        {
-            iotstock *widget = new iotstock;
-            widget->show();
-        }
-        else
-        {
-            int i = 0;
-            for (; i < args->count(); i++)
-            {
-                iotstock *widget = new iotstock;
-                widget->show();
-            }
-        }
-        args->clear();
-    }
+    iotstock *widget = new iotstock;
+    widget->show();
 
     return app.exec();
 }

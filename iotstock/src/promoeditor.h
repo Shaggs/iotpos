@@ -21,7 +21,7 @@
 #ifndef PROMOEDITOR_H
 #define PROMOEDITOR_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QtSql>

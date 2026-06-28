@@ -20,7 +20,7 @@
 #ifndef RESERVATIONS_H
 #define RESERVATIONS_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

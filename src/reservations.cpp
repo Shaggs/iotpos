@@ -17,9 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 #include <KMessageBox>
-#include <KStandardDirs>
+#include "localeutils.h"
+#include "pathutils.h"
 #include <KNotification>
 
 #include <QByteArray>
@@ -60,7 +61,7 @@ ReservationsDialog::ReservationsDialog( QWidget *parent, Gaveta *theDrawer, int 
     setButtons( KDialog::Ok|KDialog::Cancel );
     enableButtonOk(false);
 
-    QString path = KStandardDirs::locate("appdata", "styles/");
+    QString path = PathUtils::locateAppData("styles/");
     path = path+"floating_bottom.svg";
     panel = new MibitFloatPanel(this, path, Top);
     panel->setSize(250,150);
@@ -233,7 +234,7 @@ void ReservationsDialog::cancelReservation()
             info.type   = ctCashOut; // NOTE: use ctCashOutReservations ???
             qulonglong cfId = myDb->insertCashFlow(info);
             drawer->insertCashflow(cfId);
-            QString paymentStr = KGlobal::locale()->formatMoney(payment, QString(), 2);
+            QString paymentStr = LocaleUtils::formatMoney(payment, QString(), 2);
             KNotification *notify = new KNotification("information", this);
             notify->setText(i18n("The reimbursement for the reservation is %1. Get it from the drawer.", paymentStr));
             QPixmap pixmap = DesktopIcon("dialog-information",32);
@@ -288,4 +289,3 @@ void ReservationsDialog::slotButtonClicked(int button)
   }
   else QDialog::reject();
 }
-

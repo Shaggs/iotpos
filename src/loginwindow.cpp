@@ -27,8 +27,8 @@
 #include <QtGui>
 #include <QPixmap>
 #include <kiconloader.h>
-#include <klocale.h>
-#include <kstandarddirs.h>
+#include <KLocalizedString>
+#include "pathutils.h"
 #include "../dataAccess/azahar.h"
 
 
@@ -149,7 +149,7 @@ LoginWindow::LoginWindow(QString caption,
       imageError->setPixmap(DesktopIcon("dialog-cancel", 22));
       QTimer::singleShot(3000, this, SLOT(showAdminPhoto()));
       resize(348,215); //Size of the login background...
-      path = KStandardDirs::locate("appdata", "styles/");
+      path = PathUtils::locateAppData("styles/");
       pixm = QPixmap(path + Settings::styleName() + "/passwordBackground_wide.png");
       //qDebug()<<"password image path:"<<path + Settings::styleName();
       setMask( pixm.mask() );
@@ -192,7 +192,7 @@ void LoginWindow::paintEvent(QPaintEvent* event){
   QDialog::paintEvent(event);
   QPainter painter(this);
   painter.setClipRegion(event->region());
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   QPixmap bg; QString fileName;
   //getting style source.
   fileName = path + Settings::styleName() + "/" + Settings::styleName() + ".qss";

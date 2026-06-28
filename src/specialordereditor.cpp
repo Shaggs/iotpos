@@ -17,11 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 #include <KMessageBox>
 #include <KFileDialog>
-#include <KStandardDirs>
-#include <KLocale>
+#include "localeutils.h"
+#include "pathutils.h"
 
 #include <QByteArray>
 #include <QRegExpValidator>
@@ -90,13 +90,13 @@ SpecialOrderEditor::SpecialOrderEditor( QWidget *parent, bool newOne )
     }
 
     //tip
-    QString path = KStandardDirs::locate("appdata", "styles/");
+    QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
     qtyTip   = new MibitTip(this, ui->editQty, path, DesktopIcon("dialog-warning",32) );
-    path = KStandardDirs::locate("appdata", "styles/")+"rotated_tip.svg";
+    path = PathUtils::locateAppData("styles/")+"rotated_tip.svg";
     groupTip = new MibitTip(this, ui->groupView, path, DesktopIcon("dialog-warning",32), tpAbove );
 
-    path = KStandardDirs::locate("appdata", "styles/");
+    path = PathUtils::locateAppData("styles/");
     path = path+"floating_bottom.svg";
     newClientPanel = new MibitFloatPanel(this, path, Top);
     newClientPanel->setSize(550,250);
@@ -177,7 +177,7 @@ void SpecialOrderEditor::calculateCost()
  paymentEach = priceEach*(.50);
  double qty = 0;
  qty = ui->editQty->value();
- ui->lblPrice->setText(KGlobal::locale()->formatMoney(priceEach*qty, QString(), 2));//TOTAL!
+ ui->lblPrice->setText(LocaleUtils::formatMoney(priceEach*qty, QString(), 2));//TOTAL!
  ui->editPayment->setValue(paymentEach*qty);
 }
 

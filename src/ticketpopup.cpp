@@ -23,7 +23,7 @@
 #include <QtGui>
 #include <QTimer>
 
-#include <kstandarddirs.h>
+#include "pathutils.h"
 
 TicketPopup::TicketPopup(QString text, QPixmap pixmap, int timeToClose)
 {
@@ -47,7 +47,7 @@ TicketPopup::TicketPopup(QString text, QPixmap pixmap, int timeToClose)
   connect(timer, SIGNAL(timeout()), this, SLOT(closeIt()));
   
 
-  QString path = KStandardDirs::locate("appdata", "images/");
+  QString path = PathUtils::locateAppData("images/");
   QString filen = path + "/imgPrint.png";
   QPixmap pix(filen);
   setMask(pix.mask());

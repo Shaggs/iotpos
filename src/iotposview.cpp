@@ -46,13 +46,14 @@
 #include "../mibitWidgets/mibitnotifier.h"
 #include "../iotstock/src/clienteditor.h"
 #include "BasketPriceCalculationService.h"
+#include "localeutils.h"
 
 
 //StarMicronics printers
 // #include "printers/sp500.h"
 
-#include <QtGui/QPrinter>
-#include <QtGui/QPrintDialog>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QWidget>
 #include <QStringList>
 #include <QTimer>
@@ -74,6 +75,7 @@
 #include <QPushButton>
 #include <QDir>
 #include <QMessageBox>
+#include <QLocale>
 
 #include <kplotobject.h>
 #include <kplotwidget.h>
@@ -81,9 +83,9 @@
 #include <kplotpoint.h>
 
 
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kiconloader.h>
-#include <kstandarddirs.h>
+#include "pathutils.h"
 #include <kmessagebox.h>
 #include <kpassivepopup.h>
 #include <KNotification>
@@ -205,20 +207,20 @@ iotposView::iotposView() //: QWidget(parent)
   objSales = new KPlotObject( Qt::yellow, KPlotObject::Bars, KPlotObject::Star);
   ui_mainview.plotSales->addPlotObject( objSales );
   ui_mainview.plotSales->axis( KPlotWidget::BottomAxis )->setLabel( i18n("%1", mes) );
-  ui_mainview.plotSales->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Sales (%1)", KGlobal::locale()->currencySymbol()) );
+  ui_mainview.plotSales->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Sales (%1)", LocaleUtils::currencySymbol()) );
 
   //MibitTips
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   path = path+"tip.svg";
   tipCode   = new MibitTip(this, ui_mainview.editItemCode, path, DesktopIcon("dialog-warning",32) );
-  path = KStandardDirs::locate("appdata", "styles/")+"rotated_tip.svg";
+  path = PathUtils::locateAppData("styles/")+"rotated_tip.svg";
   tipAmount = new MibitTip(this, ui_mainview.groupPayment, path, DesktopIcon("dialog-warning",32), tpAbove );
 
 
   QTimer::singleShot(1000, this, SLOT(setupGridView()));
 
   //MibitPasswordDialog
-  path = KStandardDirs::locate("appdata", "styles/") + "dialog.svg";
+  path = PathUtils::locateAppData("styles/") + "dialog.svg";
   lockDialog = new MibitPasswordDialog(this, "text", path, DesktopIcon("object-locked",64));
   lockDialog->setSize(300,150);
   lockDialog->setTextColor("Yellow");//Ensure to pass a valid Qt-CSS color name.
@@ -226,7 +228,7 @@ iotposView::iotposView() //: QWidget(parent)
   connect(lockDialog, SIGNAL(returnPressed()), this, SLOT(unlockScreen()));
 
   //MibitFloatPanel
-  path = KStandardDirs::locate("appdata", "styles/");
+  path = PathUtils::locateAppData("styles/");
   path = path+ "tip.svg"; //"panel_top.svg"; //or use the floating_top?
   currencyPanel = new MibitFloatPanel(ui_mainview.stackedWidget, path, Top);
   currencyPanel->setSize(200,211);
@@ -250,7 +252,7 @@ iotposView::iotposView() //: QWidget(parent)
   oDiscountMoney = 0;
 
   //float panel for credits.
-  path = KStandardDirs::locate("appdata", "styles/");
+  path = PathUtils::locateAppData("styles/");
   path = path+ "panel_top.svg";
   creditPanel = new MibitFloatPanel(ui_mainview.frame, path, Top);
   creditPanel->setSize(460,300);
@@ -259,7 +261,7 @@ iotposView::iotposView() //: QWidget(parent)
   creditPanel->setHiddenTotally(true);
   creditPanel->hide();
 
-  path = KStandardDirs::locate("appdata", "styles/");
+  path = PathUtils::locateAppData("styles/");
   path = path+"tip.svg";
   notifierPanel = new MibitNotifier(this,path, DesktopIcon("dialog-warning", 32));
 
@@ -592,7 +594,7 @@ void iotposView::setupGridView()
 void iotposView::loadIcons()
 {
   ui_mainview.labelImageSearch->setPixmap(DesktopIcon("edit-find", 64));
-  QString logoBottomFile = KStandardDirs::locate("appdata", "images/logo_bottom.png");
+  QString logoBottomFile = PathUtils::locateAppData("images/logo_bottom.png");
   ui_mainview.labelBanner->setPixmap(QPixmap(logoBottomFile));
   ui_mainview.labelBanner->setAlignment(Qt::AlignCenter);
 }
@@ -1434,10 +1436,10 @@ void iotposView::refreshTotalLabel()
     else {
         change = 0.0;
     }
-    ui_mainview.labelTotal->setText(QString("%1").arg(KGlobal::locale()->formatMoney(summary.getGross().toDouble())));
-    ui_mainview.lblSubtotal->setText(QString("%1").arg(KGlobal::locale()->formatMoney(summary.getNet().toDouble()+summary.getDiscountGross().toDouble())));//FIXME temporal, seems than  gross and net are equal without + summary.getDiscountGross().toDouble()
-    ui_mainview.labelChange->setText(QString("%1") .arg(KGlobal::locale()->formatMoney(change)));
-    ui_mainview.labelTotalDiscount->setText(QString("%1") .arg(KGlobal::locale()->formatMoney(summary.getDiscountGross().toDouble())));
+    ui_mainview.labelTotal->setText(QString("%1").arg(LocaleUtils::formatMoney(summary.getGross().toDouble())));
+    ui_mainview.lblSubtotal->setText(QString("%1").arg(LocaleUtils::formatMoney(summary.getNet().toDouble()+summary.getDiscountGross().toDouble())));//FIXME temporal, seems than  gross and net are equal without + summary.getDiscountGross().toDouble()
+    ui_mainview.labelChange->setText(QString("%1") .arg(LocaleUtils::formatMoney(change)));
+    ui_mainview.labelTotalDiscount->setText(QString("%1") .arg(LocaleUtils::formatMoney(summary.getDiscountGross().toDouble())));
     if (summary.getDiscountGross().toDouble() == 0 && !ui_mainview.labelTotalDiscount->isHidden()){
         ui_mainview.labelTotalDiscountpre->hide();
         ui_mainview.labelTotalDiscount->hide();
@@ -1446,13 +1448,13 @@ void iotposView::refreshTotalLabel()
         ui_mainview.labelTotalDiscountpre->show();
         ui_mainview.labelTotalDiscount->show();
     }
-    ui_mainview.lblSaleTaxes->setText(QString("%1") .arg(KGlobal::locale()->formatMoney(summary.getTax().toDouble())));
+    ui_mainview.lblSaleTaxes->setText(QString("%1") .arg(LocaleUtils::formatMoney(summary.getTax().toDouble())));
     ///update client discount
     //QString dStr;
     //if (clientInfo.discount >0) {
-    //    dStr = i18n("Discount: %1%  [%2]",clientInfo.discount, KGlobal::locale()->formatMoney(discMoney));
+    //    dStr = i18n("Discount: %1%  [%2]",clientInfo.discount, LocaleUtils::formatMoney(discMoney));
     //} else if (oDiscountMoney >0 ){
-    //    dStr = i18n("Discount: %1", KGlobal::locale()->formatMoney(oDiscountMoney));
+    //    dStr = i18n("Discount: %1", LocaleUtils::formatMoney(oDiscountMoney));
     //}
     updateClientInfo();
 
@@ -1523,7 +1525,7 @@ RoundingInfo iotposView::roundUsStandard(const double &number)
 
     result.intIntPart   = intIntPart;
     result.intDecPart   = intNewDecPart;
-    result.strResult    = newIntPart + "." + newDecPart; //Here using a DOT as decimal separator. FIXME: Use locale to get the decimal separator. But KLocale formatMoney/Number can do it from the result.doubleResult.
+    result.strResult    = newIntPart + "." + newDecPart; //Here using a DOT as decimal separator. FIXME: Use locale to get the decimal separator (QLocale can format numbers).
     result.doubleResult = (result.strResult).toDouble();
 
     qDebug()<<__FUNCTION__<<"Original number: "<<number<<"doubleResult:"<<result.doubleResult<<" strResult:"<<result.strResult<<" |  intIntPart:"<<result.intIntPart<<" intDecPart:"<<result.intDecPart;
@@ -1754,9 +1756,9 @@ if ( doNotAddMoreItems ) { //only for reservations
             //get client Remaining credit (-) to inform the client.
             CreditInfo credit = myDb->getCreditInfoForClient(cI.id);
             if (credit.total <= 0) //if it is negative then inform.
-                msg = i18n("<b>Welcome</b> <i>%1</i>. You have remaining <b>debit</b> of %2 to use.",clientInfo.name, KGlobal::locale()->formatMoney(-credit.total));
+                msg = i18n("<b>Welcome</b> <i>%1</i>. You have remaining <b>debit</b> of %2 to use.",clientInfo.name, LocaleUtils::formatMoney(-credit.total));
             else
-                msg = i18n("<b>Welcome</b> <i>%1</i>. You have remaining <b>credit</b> of %2 used.",clientInfo.name, KGlobal::locale()->formatMoney(-credit.total));
+                msg = i18n("<b>Welcome</b> <i>%1</i>. You have remaining <b>credit</b> of %2 used.",clientInfo.name, LocaleUtils::formatMoney(-credit.total));
             updateClientInfo();
             refreshTotalLabel();
             notifierPanel->setSize(350,150);
@@ -2428,24 +2430,24 @@ void iotposView::displayItemInfo(QTableWidgetItem* item)
 
     ui_mainview.labelDetailPhoto->setPixmap(pix);
     str = QString("%1 (%2 %)")
-        .arg(KGlobal::locale()->formatMoney(info.totaltax)).arg(info.tax+info.extratax);
+        .arg(LocaleUtils::formatMoney(info.totaltax)).arg(info.tax+info.extratax);
     ui_mainview.labelDetailTotalTaxes->setText(QString("<html>%1 <b>%2</b></html>")
         .arg(tTotalTax).arg(str));
     str = QString("%1 (%2 %)")
-        .arg(KGlobal::locale()->formatMoney(tax1m)).arg(info.tax);
+        .arg(LocaleUtils::formatMoney(tax1m)).arg(info.tax);
     ui_mainview.labelDetailTax1->setText(QString("<html>%1 <b>%2</b></html>")
         .arg(tTax).arg(str));
     str = QString("%1 (%2 %)")
-        .arg(KGlobal::locale()->formatMoney(tax2m)).arg(info.extratax);
+        .arg(LocaleUtils::formatMoney(tax2m)).arg(info.extratax);
     ui_mainview.labelDetailTax2->setText(QString("<html>%1 <b>%2</b></html>")
         .arg(tOTax).arg(str));
     ui_mainview.labelDetailUnits->setText(QString("<html>%1 <b>%2</b></html>")
         .arg(tUnits).arg(uLabel));
     ui_mainview.labelDetailDesc->setText(QString("<html><b>%1</b></html>").arg(desc));
     ui_mainview.labelDetailPrice->setText(QString("<html>%1 <b>%2</b></html>")
-        .arg(tPrice).arg(KGlobal::locale()->formatMoney(price)));
+        .arg(tPrice).arg(LocaleUtils::formatMoney(price)));
     ui_mainview.labelDetailDiscount->setText(QString("<html>%1 <b>%2 (%3 %)</b></html>")
-        .arg(tDisc).arg(KGlobal::locale()->formatMoney(disc)).arg(discP));
+        .arg(tDisc).arg(LocaleUtils::formatMoney(disc)).arg(discP));
     if (info.points>0) {
       ui_mainview.labelDetailPoints->setText(QString("<html>%1 <b>%2</b></html>")
         .arg(tPoints).arg(info.points));
@@ -3047,12 +3049,12 @@ void iotposView::finishCurrentTransaction()
 
     QString realSubtotal;
     //if (Settings::addTax()) {
-      //realSubtotal = KGlobal::locale()->formatMoney(subTotalSum-discMoney+soDiscounts+pDiscounts, QString(), 2);
-      realSubtotal = KGlobal::locale()->formatMoney(subTotalSum+discMoney+soDiscounts+pDiscounts, QString(), 2);
+      //realSubtotal = LocaleUtils::formatMoney(subTotalSum-discMoney+soDiscounts+pDiscounts, QString(), 2);
+      realSubtotal = LocaleUtils::formatMoney(subTotalSum+discMoney+soDiscounts+pDiscounts, QString(), 2);
       qDebug()<<"\n realSubtotal[1]\t\tsubTotalSum:" << subTotalSum << ", discMoney: " << discMoney << ", soDiscounts: " << soDiscounts << ", pDiscounts: " << pDiscounts << endl;
     //}
     //else {
-    //  realSubtotal = KGlobal::locale()->formatMoney(subTotalSum-totalTax+discMoney+soDiscounts+pDiscounts, QString(), 2); //FIXME: es +discMoney o -discMoney??
+    //  realSubtotal = LocaleUtils::formatMoney(subTotalSum-totalTax+discMoney+soDiscounts+pDiscounts, QString(), 2); //FIXME: es +discMoney o -discMoney??
     //  qDebug()<<"\n realSubtotal[2]\t\tsubTotalSum:" << subTotalSum << ", totalTax: " << totalTax << ", discMoney: " << discMoney << ", soDiscounts: " << soDiscounts << ", pDiscounts: " << pDiscounts << endl;
     //}
 
@@ -3095,7 +3097,7 @@ void iotposView::finishCurrentTransaction()
     subtotal.add(summary.getDiscountGross());
     subtotal.substract(summary.getTax());
 
-    ticket.subTotal = KGlobal::locale()->formatMoney(subtotal.toDouble(), QString(), 2);
+    ticket.subTotal = LocaleUtils::formatMoney(subtotal.toDouble(), QString(), 2);
     ticket.totalTax = summary.getTax().toDouble();
     //ticket.total = summary.getGross() ;
     ticket.clientDiscMoney = 0.0;
@@ -3208,7 +3210,7 @@ void iotposView::printTicket(TicketInfo ticket)
   itemsForPrint.append(line);
   line = QString("%1  %2").arg(hTicket).arg(salesperson);
   itemsForPrint.append(line);
-  line = KGlobal::locale()->formatDateTime(ticket.datetime, KLocale::LongDate);
+  line = LocaleUtils::formatDateTime(ticket.datetime, QLocale::LongFormat);
   itemsForPrint.append(line);
   itemsForPrint.append("          ");
   hQty.append("      ").truncate(6);
@@ -3287,7 +3289,7 @@ void iotposView::printTicket(TicketInfo ticket)
       }
       if (!tLine.isGroup && tLine.payment > 0) {
         //print the delivery date.
-        itemsForPrint<<(hDeliveryDT+" "+KGlobal::locale()->formatDateTime(tLine.deliveryDateTime,  KLocale::ShortDate));
+        itemsForPrint<<(hDeliveryDT+" "+LocaleUtils::formatDateTime(tLine.deliveryDateTime,  QLocale::ShortFormat));
       }
     }
     if (hasDiscount) itemsForPrint.append(QString("        * %1 *     -%2").arg(hDisc).arg(idiscount) );
@@ -3299,18 +3301,18 @@ void iotposView::printTicket(TicketInfo ticket)
   QString harticles = i18np("%1 article.", "%1 articles.", ticket.itemcount);
   QString htotal    = i18n("A total of");
   ticketHtml.append(QString("</table><br><br><b>%1</b> %2 <b>%3</b>")
-      .arg(harticles).arg(htotal).arg(KGlobal::locale()->formatMoney(ticket.total, QString(), 2)));
+      .arg(harticles).arg(htotal).arg(LocaleUtils::formatMoney(ticket.total, QString(), 2)));
   ticketHtml.append(i18n("<br>Paid with %1, your change is <b>%2</b><br>",
-                          KGlobal::locale()->formatMoney(ticket.paidwith, QString(), 2),
-                          KGlobal::locale()->formatMoney(ticket.change, QString(), 2)));
+                          LocaleUtils::formatMoney(ticket.paidwith, QString(), 2),
+                          LocaleUtils::formatMoney(ticket.change, QString(), 2)));
   ticketHtml.append(Settings::editTicketMessage());
   //Text Ticket
   itemsForPrint.append("  ");
-  line = QString("%1  %2 %3").arg(harticles).arg(htotal).arg(KGlobal::locale()->formatMoney(ticket.total, QString(), 2));
+  line = QString("%1  %2 %3").arg(harticles).arg(htotal).arg(LocaleUtils::formatMoney(ticket.total, QString(), 2));
   itemsForPrint.append(line);
   itemsForPrint.append("  ");
    if (tDisc > 0) {
-    line = i18n("You saved %1", KGlobal::locale()->formatMoney(tDisc, QString(), 2));
+    line = i18n("You saved %1", LocaleUtils::formatMoney(tDisc, QString(), 2));
     itemsForPrint.append(line);
   }
   if (ticket.clientDiscMoney>0) itemsForPrint.append(hClientDisc+": "+QString::number(ticket.clientDiscMoney));
@@ -3318,7 +3320,7 @@ void iotposView::printTicket(TicketInfo ticket)
   if (ticket.clientPoints>0 && ticket.clientid>1) itemsForPrint.append(hClientPoints);
 //  itemsForPrint.append(" ");
   line = i18n("Paid with %1, your change is %2",
-              KGlobal::locale()->formatMoney(ticket.paidwith, QString(), 2), KGlobal::locale()->formatMoney(ticket.change, QString(), 2));
+              LocaleUtils::formatMoney(ticket.paidwith, QString(), 2), LocaleUtils::formatMoney(ticket.change, QString(), 2));
   itemsForPrint.append(line);
   if (ticket.paidWithCard) {
     ticketHtml.append(i18n("<br>Card # %1<br>Authorisation # %2",ticket.cardnum, ticket.cardAuthNum));
@@ -3384,7 +3386,7 @@ void iotposView::printTicket(TicketInfo ticket)
       CreditInfo crInfo  = myDb->getCreditInfoForClient(ticket.clientid, false); //gets the credit info for the client, wihtout creating a new creditInfo if not exists.
       if (crInfo.id > 0) {
           //the client has credit info.
-          ptInfo.thPoints   = i18n(" %3 [ %4 ]| You got %1 points | Your accumulated is :%2 | | Your credit balance is: %5", ticket.buyPoints, ticket.clientPoints, clientName, ticket.clientid, KGlobal::locale()->formatMoney(crInfo.total, QString(), 2));
+          ptInfo.thPoints   = i18n(" %3 [ %4 ]| You got %1 points | Your accumulated is :%2 | | Your credit balance is: %5", ticket.buyPoints, ticket.clientPoints, clientName, ticket.clientid, LocaleUtils::formatMoney(crInfo.total, QString(), 2));
       } else {
           ptInfo.thPoints   = i18n(" %3 [ %4 ]| You got %1 points | Your accumulated is :%2 | ", ticket.buyPoints, ticket.clientPoints, clientName, ticket.clientid);
       }
@@ -3398,25 +3400,25 @@ void iotposView::printTicket(TicketInfo ticket)
       ptInfo.salesPerson= loggedUserName;
       ptInfo.terminal   = terminal;
       ptInfo.thPhone    = i18n("Phone: ");
-      ptInfo.thDate     = KGlobal::locale()->formatDateTime(ptInfo.ticketInfo.datetime, KLocale::LongDate);
+      ptInfo.thDate     = LocaleUtils::formatDateTime(ptInfo.ticketInfo.datetime, QLocale::LongFormat);
       ptInfo.thTicket   = hTicket;
       ptInfo.thProduct  = hProduct;
       ptInfo.thQty      = i18n("Qty");
       ptInfo.thPrice    = hPrice;
       ptInfo.thDiscount = hDisc;
       ptInfo.thTotal    = hTotal;
-      ptInfo.thTotals   = KGlobal::locale()->formatMoney(ptInfo.ticketInfo.total, QString(), 2);
+      ptInfo.thTotals   = LocaleUtils::formatMoney(ptInfo.ticketInfo.total, QString(), 2);
       ptInfo.thArticles = i18np("%1 article.", "%1 articles.", ptInfo.ticketInfo.itemcount);
-      ptInfo.thPaid     = KGlobal::locale()->formatMoney(ptInfo.ticketInfo.paidwith, QString(), 2);
-      ptInfo.thChange   = KGlobal::locale()->formatMoney(ptInfo.ticketInfo.change, QString(), 2);
+      ptInfo.thPaid     = LocaleUtils::formatMoney(ptInfo.ticketInfo.paidwith, QString(), 2);
+      ptInfo.thChange   = LocaleUtils::formatMoney(ptInfo.ticketInfo.change, QString(), 2);
       ptInfo.thChangeStr= i18n("Change");
-      ptInfo.tDisc      = KGlobal::locale()->formatMoney(-tDisc, QString(), 2);
+      ptInfo.tDisc      = LocaleUtils::formatMoney(-tDisc, QString(), 2);
       ptInfo.thCard     = i18n("Card Number  : %1", ticket.cardnum);
       ptInfo.thCardAuth = i18n("Authorization : %1", ticket.cardAuthNum);
       ptInfo.totDisc    = tDisc;
       ptInfo.subtotal   = ticket.subTotal;
       ptInfo.logoOnTop = Settings::chLogoOnTop();
-      //QString signM = KGlobal::locale()->formatMoney(tDisc, QString(), 2);
+      //QString signM = LocaleUtils::formatMoney(tDisc, QString(), 2);
       //signM.truncate(2); //NOTE: this is only getting the sign "$"...
       ptInfo.paymentStrPrePayment = hPrePayment;
       ptInfo.paymentStrComplete = hCompletePayment;
@@ -3426,7 +3428,7 @@ void iotposView::printTicket(TicketInfo ticket)
       ptInfo.clientDiscMoney = ticket.clientDiscMoney;
       ptInfo.clientDiscountStr = hClientDisc;
       ptInfo.randomMsg = myDb->getRandomMessage(rmExcluded, rmSeason);
-      ptInfo.taxes = KGlobal::locale()->formatMoney(ticket.totalTax, QString(), 2);
+      ptInfo.taxes = LocaleUtils::formatMoney(ticket.totalTax, QString(), 2);
       ptInfo.thTax = hTax;
       ptInfo.thSubtotal = hSubtotal;
       ptInfo.thTendered = hTendered;
@@ -3457,7 +3459,7 @@ void iotposView::printTicket(TicketInfo ticket)
       QPrintDialog printDialog( &printer );
       printDialog.setWindowTitle(i18n("Print Receipt -- Press ESC to export to PDF to your home/iotpos-printing/ folder"));
 ptInfo.totDisc = discMoney;
-ptInfo.tDisc = KGlobal::locale()->formatMoney(-discMoney, QString(), 2);
+ptInfo.tDisc = LocaleUtils::formatMoney(-discMoney, QString(), 2);
       if ( printDialog.exec() ) {
         //this overrides what the user chooses if he does change sizes and margins.
         printer.setPageMargins(0,0,0,0,QPrinter::Millimeter);
@@ -3517,18 +3519,18 @@ ptInfo.tDisc = KGlobal::locale()->formatMoney(-discMoney, QString(), 2);
       ptInfo.salesPerson= loggedUserName;
       ptInfo.terminal   = terminal;
       ptInfo.thPhone    = i18n("Phone: ");
-      ptInfo.thDate     = KGlobal::locale()->formatDateTime(ptInfo.ticketInfo.datetime, KLocale::LongDate);
+      ptInfo.thDate     = LocaleUtils::formatDateTime(ptInfo.ticketInfo.datetime, QLocale::LongFormat);
       ptInfo.thTicket   = hTicket;
       ptInfo.thProduct  = hProduct;
       ptInfo.thQty      = i18n("Qty");
       ptInfo.thPrice    = hPrice;
       ptInfo.thDiscount = hDisc;
       ptInfo.thTotal    = hTotal;
-      ptInfo.thTotals   = KGlobal::locale()->formatMoney(ptInfo.ticketInfo.total, QString(), 2);
+      ptInfo.thTotals   = LocaleUtils::formatMoney(ptInfo.ticketInfo.total, QString(), 2);
       ptInfo.thPoints   = i18n(" %3 [ %4 ]| You got %1 points | Your accumulated is :%2 | ", ticket.buyPoints, ticket.clientPoints, clientName, ticket.clientid);
       ptInfo.thArticles = i18np("%1 article.", "%1 articles.", ptInfo.ticketInfo.itemcount);
-      ptInfo.thPaid     = ""; //i18n("Paid with %1, your change is %2", KGlobal::locale()->formatMoney(ptInfo.ticketInfo.paidwith, QString(), 2),KGlobal::locale()->formatMoney(ptInfo.ticketInfo.change, QString(), 2) );
-      ptInfo.tDisc      = KGlobal::locale()->formatMoney(-tDisc, QString(), 2);
+      ptInfo.thPaid     = ""; //i18n("Paid with %1, your change is %2", LocaleUtils::formatMoney(ptInfo.ticketInfo.paidwith, QString(), 2),LocaleUtils::formatMoney(ptInfo.ticketInfo.change, QString(), 2) );
+      ptInfo.tDisc      = LocaleUtils::formatMoney(-tDisc, QString(), 2);
       ptInfo.subtotal   = ticket.subTotal;
       ptInfo.totDisc    = tDisc;
       ptInfo.logoOnTop = Settings::chLogoOnTop();
@@ -3554,14 +3556,14 @@ ptInfo.tDisc = KGlobal::locale()->formatMoney(-discMoney, QString(), 2);
       ptInfo.storeName  = hSpecialOrder; //user for header
       ptInfo.salesPerson= loggedUserName;
       ptInfo.terminal   = terminal;
-      ptInfo.thDate     = KGlobal::locale()->formatDateTime(ptInfo.ticketInfo.datetime, KLocale::LongDate);
+      ptInfo.thDate     = LocaleUtils::formatDateTime(ptInfo.ticketInfo.datetime, QLocale::LongFormat);
       ptInfo.thTicket   = hTicket;
       ptInfo.thProduct  = hProduct;
       ptInfo.thQty      = i18n("Qty");
       ptInfo.thPrice    = hPrice;
       ptInfo.thTotal    = hTotal;
-      ptInfo.thTotals   = KGlobal::locale()->formatMoney(ptInfo.ticketInfo.total, QString(), 2);
-      QString signM = KGlobal::locale()->formatMoney(tDisc, QString(), 2);
+      ptInfo.thTotals   = LocaleUtils::formatMoney(ptInfo.ticketInfo.total, QString(), 2);
+      QString signM = LocaleUtils::formatMoney(tDisc, QString(), 2);
       signM.truncate(2); //this gets the $ only...
       ptInfo.paymentStrPrePayment = hPrePayment + signM;
       ptInfo.paymentStrComplete = hCompletePayment + signM;
@@ -4024,13 +4026,13 @@ void iotposView::corteDeCaja()
     pbInfo.thTrAmount  = strAmount;
     pbInfo.thTrPaidW    = strPaidWith;
     pbInfo.thTrPayMethod=strPayMethodH;
-    pbInfo.startDate   = i18n("Start: %1",KGlobal::locale()->formatDateTime(drawer->getStartDateTime(), KLocale::LongDate));
-    pbInfo.endDate     = i18n("End  : %1",KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate));
+    pbInfo.startDate   = i18n("Start: %1",LocaleUtils::formatDateTime(drawer->getStartDateTime(), QLocale::LongFormat));
+    pbInfo.endDate     = i18n("End  : %1",LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat));
     //Qty's
-    pbInfo.initAmount = KGlobal::locale()->formatMoney(drawer->getInitialAmount(), QString(), 2);
-    pbInfo.inAmount   = KGlobal::locale()->formatMoney(drawer->getInAmount(), QString(), 2);
-    pbInfo.outAmount  = KGlobal::locale()->formatMoney(drawer->getOutAmount(), QString(), 2);
-    pbInfo.cashAvailable=KGlobal::locale()->formatMoney(drawer->getAvailableInCash(), QString(), 2);
+    pbInfo.initAmount = LocaleUtils::formatMoney(drawer->getInitialAmount(), QString(), 2);
+    pbInfo.inAmount   = LocaleUtils::formatMoney(drawer->getInAmount(), QString(), 2);
+    pbInfo.outAmount  = LocaleUtils::formatMoney(drawer->getOutAmount(), QString(), 2);
+    pbInfo.cashAvailable=LocaleUtils::formatMoney(drawer->getAvailableInCash(), QString(), 2);
     pbInfo.logoOnTop = Settings::chLogoOnTop();
     pbInfo.thTitleCFDetails = i18n("Cash flow Details");
     pbInfo.thCFType    = i18n("Type");
@@ -4050,10 +4052,10 @@ void iotposView::corteDeCaja()
         .arg(strInH)
         .arg(strOutH)
         .arg(strInDrawerH)
-        .arg(KGlobal::locale()->formatMoney(drawer->getInitialAmount(), QString(), 2))
-        .arg(KGlobal::locale()->formatMoney(drawer->getInAmount(), QString(), 2))
-        .arg(KGlobal::locale()->formatMoney(drawer->getOutAmount(), QString(), 2))
-        .arg(KGlobal::locale()->formatMoney(drawer->getAvailableInCash(), QString(), 2))
+        .arg(LocaleUtils::formatMoney(drawer->getInitialAmount(), QString(), 2))
+        .arg(LocaleUtils::formatMoney(drawer->getInAmount(), QString(), 2))
+        .arg(LocaleUtils::formatMoney(drawer->getOutAmount(), QString(), 2))
+        .arg(LocaleUtils::formatMoney(drawer->getAvailableInCash(), QString(), 2))
         .arg(strTitlePre);
     linesHTML.append(line);
     line = QString("<table border=1 cellpadding=5><tr><th colspan=5>%1</th></tr><tr><th>%2</th><th>%3</th><th>%4</th><th>%5</th><th>%6</th></tr>")
@@ -4067,18 +4069,18 @@ void iotposView::corteDeCaja()
 
     //TXT
     lines.append(strTitle);
-    line = QString(KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate));
+    line = QString(LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat));
     lines.append(line);
     lines.append("----------------------------------------");
-    line = QString("%1 %2").arg(strInitAmount).arg(KGlobal::locale()->formatMoney(drawer->getInitialAmount(), QString(), 2));
+    line = QString("%1 %2").arg(strInitAmount).arg(LocaleUtils::formatMoney(drawer->getInitialAmount(), QString(), 2));
     lines.append(line);
     line = QString("%1 :%2, %3 :%4")
         .arg(strInH)
-        .arg(KGlobal::locale()->formatMoney(drawer->getInAmount(), QString(), 2))
+        .arg(LocaleUtils::formatMoney(drawer->getInAmount(), QString(), 2))
         .arg(strOutH)
-        .arg(KGlobal::locale()->formatMoney(drawer->getOutAmount(), QString(), 2));
+        .arg(LocaleUtils::formatMoney(drawer->getOutAmount(), QString(), 2));
     lines.append(line);
-    line = QString(" %1 %2").arg(KGlobal::locale()->formatMoney(drawer->getAvailableInCash(), QString(), 2)).arg(strInDrawerH);
+    line = QString(" %1 %2").arg(LocaleUtils::formatMoney(drawer->getAvailableInCash(), QString(), 2)).arg(strInDrawerH);
     lines.append(line);
     //Now, add a transactions report per user and for today.
     //At this point, drawer must be initialized and valid.
@@ -4120,8 +4122,8 @@ void iotposView::corteDeCaja()
       QString tmp = QString("%1|%2|%3|%4")
         .arg(dId)
         .arg(dHour+":"+dMinute)
-        .arg(KGlobal::locale()->formatMoney(info.amount, QString(), 2))
-        .arg(KGlobal::locale()->formatMoney(info.paywith, QString(), 2));
+        .arg(LocaleUtils::formatMoney(info.amount, QString(), 2))
+        .arg(LocaleUtils::formatMoney(info.paywith, QString(), 2));
 
       while (dId.length()<10) dId = dId.insert(dId.length(), ' ');
       while (dAmount.length()<14) dAmount = dAmount.insert(dAmount.length(), ' ');
@@ -4160,9 +4162,9 @@ void iotposView::corteDeCaja()
     cfList.clear();
     QList<CashFlowInfo> cashflowInfoList = myDb->getCashFlowInfoList( drawer->getCashflowIds() );
     foreach(CashFlowInfo cfInfo, cashflowInfoList) {
-        QString amountF = KGlobal::locale()->formatMoney(cfInfo.amount);
+        QString amountF = LocaleUtils::formatMoney(cfInfo.amount);
         //QDateTime dateTime; dateTime.setDate(cfInfo.date); dateTime.setTime(cfInfo.time);
-        QString dateF   = KGlobal::locale()->formatTime(cfInfo.time);
+        QString dateF   = LocaleUtils::formatTime(cfInfo.time);
         QString typeSign; /*cfInfo.typeStr*/
         if (cfInfo.type == ctCashIn || cfInfo.type == ctCashInReservation || cfInfo.type == ctCashInCreditPayment || cfInfo.type == ctCashInDebit)
             typeSign = "+";
@@ -4266,15 +4268,15 @@ void iotposView::endOfDay() {
     pdInfo.thTicket  = i18n("Id");
     pdInfo.salesPerson = loggedUserName;
     pdInfo.terminal  = i18n("at terminal # %1",Settings::editTerminalNumber());
-    pdInfo.thDate    = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+    pdInfo.thDate    = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
     pdInfo.thTime    = i18n("Time");
     pdInfo.thAmount  = i18n("Amount");
     pdInfo.thProfit  = i18n("Profit");
     pdInfo.thPayMethod = i18n("Method");
     pdInfo.thTotalTaxes= i18n("Total taxes collected for this terminal: ");
     pdInfo.logoOnTop = Settings::chLogoOnTop();
-    pdInfo.thTotalSales  = KGlobal::locale()->formatMoney(amountProfit.amount, QString(), 2);
-    pdInfo.thTotalProfit = KGlobal::locale()->formatMoney(amountProfit.profit, QString(), 2);
+    pdInfo.thTotalSales  = LocaleUtils::formatMoney(amountProfit.amount, QString(), 2);
+    pdInfo.thTotalProfit = LocaleUtils::formatMoney(amountProfit.profit, QString(), 2);
 
     QStringList lines;
     lines.append(pdInfo.thTitle);
@@ -4332,7 +4334,7 @@ if (Settings::printZeroTicket()) {
     lines.append("  ");
 }
     //add taxes amount
-    pdInfo.thTotalTaxes += KGlobal::locale()->formatMoney(tTaxes, QString(), 2);
+    pdInfo.thTotalTaxes += LocaleUtils::formatMoney(tTaxes, QString(), 2);
 
 
     if (Settings::smallTicketDotMatrix()) {
@@ -4586,7 +4588,7 @@ void iotposView::listViewOnMouseMove(const QModelIndex & index)
   }
 
   QString line1 = QString("<p><b><i>%1</i></b><br>").arg(desc);
-  QString line2 = QString("<b>%1</b>%2<br>").arg(tprice).arg(KGlobal::locale()->formatMoney(price));
+  QString line2 = QString("<b>%1</b>%2<br>").arg(tprice).arg(LocaleUtils::formatMoney(price));
   QString line3;
   if (onList) line3 = QString("<b>%1</b> %2 %5 %6, %3 %7: %4<br></p>").arg(tstock).arg(stockqty).arg(pInfo.qtyOnList).arg(stockqty - pInfo.qtyOnList).arg(pInfo.unitStr).arg(tmoreAv).arg(tmoreAv2);
   else line3 = QString("<b>%1</b> %2 %3 %4<br></p>").arg(tstock).arg(stockqty).arg(pInfo.unitStr).arg(tmoreAv);
@@ -4773,7 +4775,7 @@ void iotposView::updateClientInfo()
   BasketPriceCalculationService basketPriceCalculationService;
   BasketPriceSummary summary = basketPriceCalculationService.calculateBasketPrice(this->productsHash, this->clientInfo, oDiscountMoney);
   double discMoney = summary.getDiscountGross().toDouble(); //(clientInfo.discount/100)*totalSumWODisc;
-  dStr = i18n("Discount: <b>%1%</b> [<b>%2</b>]",clientInfo.discount, KGlobal::locale()->formatMoney(discMoney));
+  dStr = i18n("Discount: <b>%1%</b> [<b>%2</b>]",clientInfo.discount, LocaleUtils::formatMoney(discMoney));
 
   QString pStr = i18n("<i>%1</i> points", clientInfo.points);
   if (clientInfo.points <= 0)
@@ -4789,7 +4791,7 @@ void iotposView::updateClientInfo()
   QString creditStr;
   CreditInfo credit = myDb->getCreditInfoForClient(clientInfo.id, false);//do not create new credit if not found.
   if (credit.id > 0 && credit.total != 0 )
-      creditStr = i18n("Credit Total: <i>%1</i>", KGlobal::locale()->formatMoney(credit.total));
+      creditStr = i18n("Credit Total: <i>%1</i>", LocaleUtils::formatMoney(credit.total));
   else
       creditStr = "";
 
@@ -5020,7 +5022,7 @@ void iotposView::printTicketFromTransaction(qulonglong transactionNumber)
     subtotal  = subtotal;
   else
     subtotal  = subtotal - ticket.totalTax;
-  QString realSubtotal = KGlobal::locale()->formatMoney(subtotal, QString(), 2);
+  QString realSubtotal = LocaleUtils::formatMoney(subtotal, QString(), 2);
 
   qDebug()<<"\n*** Ticket tax:"<<trInfo.totalTax<<" itemsDiscount:"<<itemsDiscount<<"client Discount:"<<trInfo.discmoney<<" ticket total:"<<ticket.total<<" SUBTOTAL:"<<subtotal<<" AddTax:"<<Settings::addTax()<<" \n";
   ticket.subTotal = realSubtotal;
@@ -5138,7 +5140,7 @@ void iotposView::cashAvailable()
 {
   double available = drawer->getAvailableInCash();
   KNotification *notify = new KNotification("information", this);
-  notify->setText(i18n("There are <b> %1 in cash </b> available at the drawer.", KGlobal::locale()->formatMoney(available)));
+  notify->setText(i18n("There are <b> %1 in cash </b> available at the drawer.", LocaleUtils::formatMoney(available)));
   QPixmap pixmap = DesktopIcon("dialog-information",32);
   notify->setPixmap(pixmap);
   notify->sendEvent();
@@ -5983,9 +5985,9 @@ void iotposView::reserveItems()
 
         QString realSubtotal;
         if (Settings::addTax())
-            realSubtotal = KGlobal::locale()->formatMoney(subTotalSum-discMoney+pDiscounts, QString(), 2);
+            realSubtotal = LocaleUtils::formatMoney(subTotalSum-discMoney+pDiscounts, QString(), 2);
         else
-            realSubtotal = KGlobal::locale()->formatMoney(subTotalSum-totalTax+discMoney+pDiscounts, QString(), 2); //FIXME: es +discMoney o -discMoney??
+            realSubtotal = LocaleUtils::formatMoney(subTotalSum-totalTax+discMoney+pDiscounts, QString(), 2); //FIXME: es +discMoney o -discMoney??
             qDebug()<<"\n********** Total Taxes:"<<totalTax<<" total Discount:"<<discMoney<<" Prod Discounts:"<<pDiscounts;
 
         ticket.number = currentTransaction;
@@ -6378,7 +6380,7 @@ void iotposView::tenderedChanged()
         ui_mainview.btnPayCredit->setText(i18n("Pay"));
     }
 
-    ui_mainview.lblCreditChange->setText(KGlobal::locale()->formatMoney(change));
+    ui_mainview.lblCreditChange->setText(LocaleUtils::formatMoney(change));
 }
 
 void iotposView::doCreditPayment()
@@ -6599,7 +6601,7 @@ void iotposView::calculateTotalForClient()
         cursor.setBlockFormat(blockCenter);
         cursor.insertText(i18n("CREDIT REPORT"), titleFormat);
         cursor.insertBlock();
-        cursor.insertText(KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate), textFormat);
+        cursor.insertText(LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat), textFormat);
         cursor.insertBlock();
         cursor.insertBlock();
         italicsFormat.setFontPointSize(13);
@@ -6609,7 +6611,7 @@ void iotposView::calculateTotalForClient()
         //cursor.setPosition(topFrame->lastPosition());
         cursor.setBlockFormat(blockCenter);
         italicsFormat.setFontPointSize(8);
-        cursor.insertText(i18n("Balance: %1", KGlobal::locale()->formatMoney(crInfo.total)), boldFormat);
+        cursor.insertText(i18n("Balance: %1", LocaleUtils::formatMoney(crInfo.total)), boldFormat);
         cursor.insertBlock();
         cursor.insertBlock();
         qDebug()<<__FUNCTION__<<"Credit for "<<crInfo.clientId<<" -- $"<<crInfo.total;
@@ -6649,9 +6651,9 @@ void iotposView::calculateTotalForClient()
                         int row = itemsTable->rows();
                         itemsTable->insertRows(row, 1);
                         cursor = itemsTable->cellAt(row, 0).firstCursorPosition();
-                        cursor.insertText(KGlobal::locale()->formatDate(credit.date, KLocale::ShortDate), boldFormat);
+                        cursor.insertText(LocaleUtils::formatDate(credit.date, QLocale::ShortFormat), boldFormat);
                         cursor = itemsTable->cellAt(row, 1).firstCursorPosition();
-                        cursor.insertText(KGlobal::locale()->formatMoney(credit.amount), boldFormat);
+                        cursor.insertText(LocaleUtils::formatMoney(credit.amount), boldFormat);
                         cursor = itemsTable->cellAt(row, 2).firstCursorPosition();
                         if (credit.saleId == 0)
                             cursor.insertText(i18n("Payment"), textFormat);
@@ -6671,9 +6673,9 @@ void iotposView::calculateTotalForClient()
                     int row = itemsTable->rows();
                     itemsTable->insertRows(row, 1);
                     cursor = itemsTable->cellAt(row, 0).firstCursorPosition();
-                    cursor.insertText(KGlobal::locale()->formatDate(credit.date, KLocale::ShortDate), boldFormat);
+                    cursor.insertText(LocaleUtils::formatDate(credit.date, QLocale::ShortFormat), boldFormat);
                     cursor = itemsTable->cellAt(row, 1).firstCursorPosition();
-                    cursor.insertText(KGlobal::locale()->formatMoney(credit.amount), boldFormat);
+                    cursor.insertText(LocaleUtils::formatMoney(credit.amount), boldFormat);
                     cursor = itemsTable->cellAt(row, 2).firstCursorPosition();
                     if (credit.saleId == 0)
                         cursor.insertText(i18n("Payment"), textFormat);

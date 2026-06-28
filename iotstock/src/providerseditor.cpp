@@ -17,10 +17,10 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
-#include <KLocale>
+#include <QLocale>
 #include <KMessageBox>
 #include <KFileDialog>
-#include <KStandardDirs>
+#include "pathutils.h"
 
 #include <QByteArray>
 #include <QRegExpValidator>
@@ -60,7 +60,7 @@ ProvidersEditor::ProvidersEditor( QWidget *parent, bool newProvider, const QSqlD
     connect( ui->editPhone, SIGNAL(editingFinished()), this, SLOT(checkFieldsState()));
     connect( ui->editCell, SIGNAL(textChanged(const QString &)), this, SLOT(checkFieldsState()));
 
-    QString path = KStandardDirs::locate("appdata", "styles/");
+    QString path = PathUtils::locateAppData("styles/");
     path = path+"floating_bottom.svg";
     panel = new MibitFloatPanel(this, path, Bottom);
     panel->setSize(350,200);

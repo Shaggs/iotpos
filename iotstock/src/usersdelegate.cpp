@@ -23,8 +23,8 @@
 #include <QtSql>
 #include <QMouseEvent>
 #include <QPaintEvent>
-#include <klocale.h>
-#include <kstandarddirs.h>
+#include <KLocalizedString>
+#include "pathutils.h"
 #include <kiconloader.h>
 
 #include "usersdelegate.h"
@@ -41,9 +41,9 @@ void UsersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     QString pixName;
 
     if (option.state & QStyle::State_Selected)
-      pixName = KStandardDirs::locate("appdata", "images/itemBox_selected_Big.png");
+      pixName = PathUtils::locateAppData("images/itemBox_selected_Big.png");
     else
-      pixName = KStandardDirs::locate("appdata", "images/itemBox_Big.png");
+      pixName = PathUtils::locateAppData("images/itemBox_Big.png");
     
     painter->drawPixmap(option.rect.x()+5,option.rect.y()+5, QPixmap(pixName));
 

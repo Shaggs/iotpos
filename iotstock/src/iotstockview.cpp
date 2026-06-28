@@ -43,6 +43,7 @@
 #include "../../mibitWidgets/mibitnotifier.h"
 #include "../../printing/print-dev.h"
 #include "../../printing/print-cups.h"
+#include "../../src/localeutils.h"
 
 #include <QLabel>
 #include <QPixmap>
@@ -54,6 +55,7 @@
 #include <QTableView>
 #include <QInputDialog>
 #include <QListWidgetItem>
+#include <QLocale>
 
 #include <QDataWidgetMapper>
 #include <QSqlRelationalTableModel>
@@ -62,13 +64,13 @@
 #include <QHeaderView>
 #include <QDir>
 
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kactioncollection.h>
 #include <kaction.h>
-#include <kstandarddirs.h>
+#include "pathutils.h"
 
 #include <kplotobject.h>
 #include <kplotwidget.h>
@@ -131,7 +133,7 @@ iotstockView::iotstockView(QWidget *parent)
   ui_mainview.errLabel->hide();
   ui_mainview.productsViewAlt->hide();
 
-  QString logoBottomFile = KStandardDirs::locate("appdata", "images/logo.png");
+  QString logoBottomFile = PathUtils::locateAppData("images/logo.png");
   ui_mainview.logoLabel->setPixmap(QPixmap(logoBottomFile));
   ui_mainview.logoLabel->setAlignment(Qt::AlignCenter);
 
@@ -153,7 +155,7 @@ iotstockView::iotstockView(QWidget *parent)
   QTimer::singleShot(500,this, SLOT(createFloatingPanels()) );
   QTimer::singleShot(1000,this, SLOT(checkDefaultView()) );
 
-  logoBottomFile = KStandardDirs::locate("appdata", "styles/");
+  logoBottomFile = PathUtils::locateAppData("styles/");
   logoBottomFile = logoBottomFile+"tip.svg";
   notifierPanel = new MibitNotifier(this,logoBottomFile, DesktopIcon("dialog-warning", 22));
 
@@ -175,7 +177,7 @@ void iotstockView::checkDefaultView()
 
 void iotstockView::createFloatingPanels()
 {
-  QString path = KStandardDirs::locate("appdata", "styles/");
+  QString path = PathUtils::locateAppData("styles/");
   path = path+"floating_top.svg";
   fpFilterTrans    = new MibitFloatPanel(ui_mainview.transactionsTable, path, Top,460,300);
   fpFilterProducts = new MibitFloatPanel(ui_mainview.productsView, path, Top,460,200);
@@ -683,13 +685,13 @@ void iotstockView::setupGraphs()
   objSales = new KPlotObject( Qt::yellow, KPlotObject::Bars, KPlotObject::Star);
   ui_mainview.plotSales->addPlotObject( objSales );
   ui_mainview.plotSales->axis( KPlotWidget::BottomAxis )->setLabel( i18n("%1", mes) );
-  ui_mainview.plotSales->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Sales (%1)", KGlobal::locale()->currencySymbol()) );
+  ui_mainview.plotSales->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Sales (%1)", LocaleUtils::currencySymbol()) );
   ui_mainview.plotProfit->setMinimumSize( 200, 200 );
   ui_mainview.plotProfit->setAntialiasing( true );
   objProfit = new KPlotObject( Qt::yellow, KPlotObject::Bars, KPlotObject::Star);
   ui_mainview.plotProfit->addPlotObject( objProfit );
   ui_mainview.plotProfit->axis( KPlotWidget::BottomAxis )->setLabel( i18n("%1", mes) );
-  ui_mainview.plotProfit->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Profit (%1)", KGlobal::locale()->currencySymbol()) );
+  ui_mainview.plotProfit->axis( KPlotWidget::LeftAxis )->setLabel( i18n("Month Profit (%1)", LocaleUtils::currencySymbol()) );
   ui_mainview.plotMostSold->setMinimumSize( 200, 200 );
   ui_mainview.plotMostSold->setAntialiasing( true );
   objMostSold  = new KPlotObject( Qt::white, KPlotObject::Bars, KPlotObject::Star);
@@ -1528,7 +1530,7 @@ void iotstockView::setupTransactionsModel()
     transactionsModel->setHeaderData(transCardNumIndex, Qt::Horizontal, i18n("Card Num") );
     transactionsModel->setHeaderData(transItemCountIndex, Qt::Horizontal, i18n("Items Count") );
     transactionsModel->setHeaderData(transPointsIndex, Qt::Horizontal, i18n("Points") );
-    transactionsModel->setHeaderData(transDiscMoneyIndex, Qt::Horizontal, i18n("Discount %1", KGlobal::locale()->currencySymbol()) );
+    transactionsModel->setHeaderData(transDiscMoneyIndex, Qt::Horizontal, i18n("Discount %1", LocaleUtils::currencySymbol()) );
     transactionsModel->setHeaderData(transDiscIndex, Qt::Horizontal, i18n("Discount %") );
     transactionsModel->setHeaderData(transCardAuthNumberIndex, Qt::Horizontal, i18n("Card Authorization #") );
     transactionsModel->setHeaderData(transUtilityIndex, Qt::Horizontal, i18n("Profit") );
@@ -3267,15 +3269,15 @@ void iotstockView::printGralEndOfDay()
   pdInfo.thTicket  = i18n("Id");
   pdInfo.salesPerson = "";
   pdInfo.terminal  = i18n("All Terminals");
-  pdInfo.thDate    = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+  pdInfo.thDate    = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
   pdInfo.thTime    = i18n("Time");
   pdInfo.thAmount  = i18n("Amount");
   pdInfo.thProfit  = i18n("Profit");
   pdInfo.thPayMethod = i18n("Method");
   pdInfo.thTotalTaxes= i18n("Total taxes collected today: ");
   pdInfo.logoOnTop = myDb->getConfigLogoOnTop();
-  pdInfo.thTotalSales  = KGlobal::locale()->formatMoney(amountProfit.amount, QString(), 2);
-  pdInfo.thTotalProfit = KGlobal::locale()->formatMoney(amountProfit.profit, QString(), 2);
+  pdInfo.thTotalSales  = LocaleUtils::formatMoney(amountProfit.amount, QString(), 2);
+  pdInfo.thTotalProfit = LocaleUtils::formatMoney(amountProfit.profit, QString(), 2);
 
   QStringList lines; //for dotmatrix printers on /dev ports
   lines.append(pdInfo.thTitle);
@@ -3308,7 +3310,7 @@ void iotstockView::printGralEndOfDay()
   lines.append(i18n("Total Profit: %1",pdInfo.thTotalProfit));
 
   //add taxes amount
-  pdInfo.thTotalTaxes += KGlobal::locale()->formatMoney(tTaxes, QString(), 2);
+  pdInfo.thTotalTaxes += LocaleUtils::formatMoney(tTaxes, QString(), 2);
   
   if (Settings::smallTicketDotMatrix()) { // dot matrix printer
     QString printerFile=Settings::printerDevice();
@@ -3399,15 +3401,15 @@ void iotstockView::printEndOfDay()
     pdInfo.thTicket  = i18n("Id");
     pdInfo.salesPerson = myDb->getUserName(transactionsList.at(0).userid);
     pdInfo.terminal  = i18n("terminal # %1 ", terminalNum);
-    pdInfo.thDate    = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+    pdInfo.thDate    = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
     pdInfo.thTime    = i18n("Time");
     pdInfo.thAmount  = i18n("Amount");
     pdInfo.thProfit  = i18n("Profit");
     pdInfo.thPayMethod = i18n("Method");
     pdInfo.thTotalTaxes= i18n("Total taxes collected for this terminal: ");
     pdInfo.logoOnTop = myDb->getConfigLogoOnTop();
-    pdInfo.thTotalSales  = KGlobal::locale()->formatMoney(amountProfit.amount, QString(), 2);
-    pdInfo.thTotalProfit = KGlobal::locale()->formatMoney(amountProfit.profit, QString(), 2);
+    pdInfo.thTotalSales  = LocaleUtils::formatMoney(amountProfit.amount, QString(), 2);
+    pdInfo.thTotalProfit = LocaleUtils::formatMoney(amountProfit.profit, QString(), 2);
 
     QStringList lines; //for dotmatrix printers on /dev ports
     lines.append(pdInfo.thTitle);
@@ -3440,7 +3442,7 @@ void iotstockView::printEndOfDay()
     lines.append(i18n("Total Profit: %1",pdInfo.thTotalProfit));
 
     //add taxes amount
-    pdInfo.thTotalTaxes += KGlobal::locale()->formatMoney(tTaxes, QString(), 2);
+    pdInfo.thTotalTaxes += LocaleUtils::formatMoney(tTaxes, QString(), 2);
     
     if (Settings::smallTicketDotMatrix()) {
       QString printerFile=Settings::printerDevice();
@@ -3509,15 +3511,15 @@ void iotstockView::printEndOfMonth()
   pdInfo.thTicket  = i18n("Id");
   pdInfo.salesPerson = "";
   pdInfo.terminal  = i18n("All Terminals");
-  pdInfo.thDate    = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+  pdInfo.thDate    = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
   pdInfo.thTime    = i18n("Time");
   pdInfo.thAmount  = i18n("Amount");
   pdInfo.thProfit  = i18n("Profit");
   pdInfo.thPayMethod = i18n("Date");
   pdInfo.thTotalTaxes= i18n("Total taxes collected for the month: ");
   pdInfo.logoOnTop = myDb->getConfigLogoOnTop();
-  pdInfo.thTotalSales  = KGlobal::locale()->formatMoney(amountProfit.amount, QString(), 2);
-  pdInfo.thTotalProfit = KGlobal::locale()->formatMoney(amountProfit.profit, QString(), 2);
+  pdInfo.thTotalSales  = LocaleUtils::formatMoney(amountProfit.amount, QString(), 2);
+  pdInfo.thTotalProfit = LocaleUtils::formatMoney(amountProfit.profit, QString(), 2);
 
   QStringList lines;
   lines.append(pdInfo.thTitle);
@@ -3536,7 +3538,7 @@ void iotstockView::printEndOfMonth()
     QString hour     = info.time.toString("hh:mm");
     QString amount   = localeForPrinting.toString(info.amount,'f',2);
     QString profit   = localeForPrinting.toString(info.utility, 'f', 2);
-    QString payMethod=  info.date.toString("MMM d"); //KGlobal::locale()->formatDate(info.date, KLocale::ShortDate); //date instead of paymethod
+    QString payMethod=  info.date.toString("MMM d"); //LocaleUtils::formatDate(info.date, QLocale::ShortFormat); //date instead of paymethod
     
     QString line     = tid +"|"+ hour +"|"+ amount +"|"+ profit +"|"+ payMethod;
     pdInfo.trLines.append(line);
@@ -3549,7 +3551,7 @@ void iotstockView::printEndOfMonth()
   lines.append(i18n("Total Profit: %1",pdInfo.thTotalProfit));
 
   //add taxes amount
-  pdInfo.thTotalTaxes += KGlobal::locale()->formatMoney(tTaxes, QString(), 2);
+  pdInfo.thTotalTaxes += LocaleUtils::formatMoney(tTaxes, QString(), 2);
   
   if (Settings::smallTicketDotMatrix()) {
     QString printerFile=Settings::printerDevice();
@@ -3612,7 +3614,7 @@ void iotstockView::printLowStockProducts()
   plInfo.storeLogo = myDb->getConfigStoreLogo();
   plInfo.logoOnTop = myDb->getConfigLogoOnTop();
   plInfo.hTitle    = i18n("Low Stock Products (< %1)", Settings::mostSoldMaxValue());
-  plInfo.hDate     = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+  plInfo.hDate     = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
   plInfo.hCode     = i18n("Code");
   plInfo.hDesc     = i18n("Description");
   plInfo.hQty      = i18n("Stock Qty.");
@@ -3693,7 +3695,7 @@ void iotstockView::printStock()
     plInfo.storeLogo = myDb->getConfigStoreLogo();
     plInfo.logoOnTop = myDb->getConfigLogoOnTop();
     plInfo.hTitle    = i18n("Product Stock (excluding groups)");
-    plInfo.hDate     = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+    plInfo.hDate     = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
     plInfo.hCode     = i18n("Code");
     plInfo.hDesc     = i18n("Description");
     plInfo.hQty      = i18n("Stock Qty.");
@@ -3778,7 +3780,7 @@ void iotstockView::printSoldOutProducts()
   plInfo.hQty      = i18n("Stock Qty");
   plInfo.hSoldU    = i18n("Sold Units");
   plInfo.hUnitStr  = i18n("Units");
-  plInfo.hDate     = KGlobal::locale()->formatDateTime(QDateTime::currentDateTime(), KLocale::LongDate);
+  plInfo.hDate     = LocaleUtils::formatDateTime(QDateTime::currentDateTime(), QLocale::LongFormat);
 
   //each product
   for (int i = 0; i < products.size(); ++i)
@@ -3873,13 +3875,13 @@ void iotstockView::printSelectedBalance()
       pbInfo.thTrAmount  = i18n("Amount");
       pbInfo.thTrPaidW    = i18n("Paid");
       pbInfo.thTrPayMethod=i18n("Method");
-      pbInfo.startDate   = i18n("Start: %1",KGlobal::locale()->formatDateTime(info.dateTimeStart, KLocale::LongDate));
-      pbInfo.endDate     = i18n("End  : %1",KGlobal::locale()->formatDateTime(info.dateTimeEnd, KLocale::LongDate));
+      pbInfo.startDate   = i18n("Start: %1",LocaleUtils::formatDateTime(info.dateTimeStart, QLocale::LongFormat));
+      pbInfo.endDate     = i18n("End  : %1",LocaleUtils::formatDateTime(info.dateTimeEnd, QLocale::LongFormat));
       //Qty's
-      pbInfo.initAmount = KGlobal::locale()->formatMoney(info.initamount, QString(), 2);
-      pbInfo.inAmount   = KGlobal::locale()->formatMoney(info.in, QString(), 2);
-      pbInfo.outAmount  = KGlobal::locale()->formatMoney(info.out, QString(), 2);
-      pbInfo.cashAvailable=KGlobal::locale()->formatMoney(info.cash, QString(), 2);
+      pbInfo.initAmount = LocaleUtils::formatMoney(info.initamount, QString(), 2);
+      pbInfo.inAmount   = LocaleUtils::formatMoney(info.in, QString(), 2);
+      pbInfo.outAmount  = LocaleUtils::formatMoney(info.out, QString(), 2);
+      pbInfo.cashAvailable=LocaleUtils::formatMoney(info.cash, QString(), 2);
       pbInfo.logoOnTop = myDb->getConfigLogoOnTop();
       pbInfo.thTitleCFDetails = i18n("Cash flow Details");
       pbInfo.thCFType    = i18n("Type");
@@ -3890,18 +3892,18 @@ void iotstockView::printSelectedBalance()
       QStringList lines;
       QString line;
       lines.append(i18n("%1 at Terminal # %2", info.username, info.terminal));
-      line = QString(KGlobal::locale()->formatDateTime(info.dateTimeEnd, KLocale::LongDate));
+      line = QString(LocaleUtils::formatDateTime(info.dateTimeEnd, QLocale::LongFormat));
       lines.append(line);
       lines.append("----------------------------------------");
-      line = QString("%1 %2").arg(i18n("Initial Amount deposited:")).arg(KGlobal::locale()->formatMoney(info.initamount, QString(), 2));
+      line = QString("%1 %2").arg(i18n("Initial Amount deposited:")).arg(LocaleUtils::formatMoney(info.initamount, QString(), 2));
       lines.append(line);
       line = QString("%1 :%2, %3 :%4")
       .arg(i18n("In"))
-      .arg(KGlobal::locale()->formatMoney(info.in, QString(), 2))
+      .arg(LocaleUtils::formatMoney(info.in, QString(), 2))
       .arg(i18n("Out"))
-      .arg(KGlobal::locale()->formatMoney(info.out, QString(), 2));
+      .arg(LocaleUtils::formatMoney(info.out, QString(), 2));
       lines.append(line);
-      line = QString(" %1 %2").arg(KGlobal::locale()->formatMoney(info.cash, QString(), 2)).arg(i18n("In Drawer"));
+      line = QString(" %1 %2").arg(LocaleUtils::formatMoney(info.cash, QString(), 2)).arg(i18n("In Drawer"));
       lines.append(line);
       line = QString("----------%1----------").arg(i18n("Transactions Details"));
       lines.append(line);
@@ -3932,8 +3934,8 @@ void iotstockView::printSelectedBalance()
         QString tmp = QString("%1|%2|%3|%4")
         .arg(dId)
         .arg(dHour+":"+dMinute)
-        .arg(KGlobal::locale()->formatMoney(info.amount, QString(), 2))
-        .arg(KGlobal::locale()->formatMoney(info.paywith, QString(), 2));
+        .arg(LocaleUtils::formatMoney(info.amount, QString(), 2))
+        .arg(LocaleUtils::formatMoney(info.paywith, QString(), 2));
         
         while (dId.length()<10) dId = dId.insert(dId.length(), ' ');
         while (dAmount.length()<14) dAmount = dAmount.insert(dAmount.length(), ' ');
@@ -3959,8 +3961,8 @@ void iotstockView::printSelectedBalance()
       cfList.clear();
       QList<CashFlowInfo> cashflowInfoList = myDb->getCashFlowInfoList(info.dateTimeStart, info.dateTimeEnd);
       foreach(CashFlowInfo cfInfo, cashflowInfoList) {
-        QString amountF = KGlobal::locale()->formatMoney(cfInfo.amount);
-        QString dateF   = KGlobal::locale()->formatTime(cfInfo.time);
+        QString amountF = LocaleUtils::formatMoney(cfInfo.amount);
+        QString dateF   = LocaleUtils::formatTime(cfInfo.time);
         QString data = QString::number(cfInfo.id) + "|" + cfInfo.typeStr + "|" + cfInfo.reason + "|" + amountF + "|" + dateF;
         cfList.append(data);
         qDebug()<<"cashflow:"<<data;

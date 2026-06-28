@@ -20,7 +20,7 @@
 #ifndef SOSTATUS_H
 #define SOSTATUS_H
 
-#include <KDialog>
+#include "kdialogshim.h"
 #include <QDate>
 #include <QtGui>
 #include <QPixmap>

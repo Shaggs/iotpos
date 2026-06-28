@@ -18,6 +18,7 @@ find_package(
   KF5 REQUIRED
   COMPONENTS
     CoreAddons
+    Completion
     ConfigWidgets
     Config
     I18n

@@ -173,5 +173,3 @@ void SubcategoryEditor::addNewChild()
         }// dialogType == 2
     }
 }
-
-#include "subcategoryeditor.moc"

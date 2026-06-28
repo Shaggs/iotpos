@@ -40,9 +40,9 @@ class MibitNotifier : public QSvgWidget
 {
 Q_OBJECT
 public:
-    MibitNotifier(QWidget *parent = 0, const QString &file = 0, const QPixmap &icon = 0, const bool &onTop= true);
+    MibitNotifier(QWidget *parent = nullptr, const QString &file = QString(), const QPixmap &icon = QPixmap(), const bool &onTop= true);
     ~MibitNotifier();
-    void showNotification( const QString &msg = 0, const int &timeToLive = 0); //timeToLive = 0 : not auto hide it.
+    void showNotification( const QString &msg = QString(), const int &timeToLive = 0); //timeToLive = 0 : not auto hide it.
     void setOnBottom(const bool &sOnBottom = true);
     void setSVG(const QString &file);
     void setIcon(const QPixmap &icon);

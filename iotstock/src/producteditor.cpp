@@ -1266,10 +1266,6 @@ void ProductEditor::createNewMeasure()
         delete myDb;
     }
 }
-
-#include "producteditor.moc"
-
-
 void ProductEditorUI::on_chRise_clicked(bool checked)
 {
 

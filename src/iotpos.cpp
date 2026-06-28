@@ -30,6 +30,7 @@
 #include <KActionCollection>
 #include <QAction>
 #include <KStandardAction>
+#include <KLocalizedString>
 #include <QLocale>
 #include <KNotification>
 
@@ -677,18 +678,18 @@ void iotpos::enableUi()
 
 void iotpos::disableConfig()
 {
-  QAction *actPref = actionCollection()->action(KStandardAction::stdName(KStandardAction::Preferences));
+  QAction *actPref = actionCollection()->action(KStandardAction::name(KStandardAction::Preferences));
   actPref->setDisabled(true);
-  QAction *actQuit = actionCollection()->action(KStandardAction::stdName(KStandardAction::Quit));
+  QAction *actQuit = actionCollection()->action(KStandardAction::name(KStandardAction::Quit));
   //FIXME: esto no es muy bueno en produccion..
   if (!Settings::allowAnyUserToQuit()) actQuit->setDisabled(true);
 }
 
 void iotpos::enableConfig()
 {
-  QAction *actPref = actionCollection()->action(KStandardAction::stdName(KStandardAction::Preferences));
+  QAction *actPref = actionCollection()->action(KStandardAction::name(KStandardAction::Preferences));
   actPref->setEnabled(true);
-  QAction *actQuit = actionCollection()->action(KStandardAction::stdName(KStandardAction::Quit));
+  QAction *actQuit = actionCollection()->action(KStandardAction::name(KStandardAction::Quit));
   actQuit->setEnabled(true);
 
   QAction *actSop = actionCollection()->action("startOperation");
@@ -741,7 +742,7 @@ void iotpos::updateClock()
 void iotpos::updateDate()
 {
   QDate dt = QDate::currentDate();
-  labelDate->setText(LocaleUtils::formatDate(dt));
+  labelDate->setText(LocaleUtils::formatDate(dt, QLocale::ShortFormat));
 }
 
 void iotpos::updateUserName()
@@ -783,8 +784,7 @@ bool iotpos::queryClose()
   //Check if the gridview is hidden, to do not save its 0 size values.
   if ( ss1 >= 50) Settings::setSplitterSizes(m_view->getTheSplitterSizes());
   if ( ss2 >= 50) Settings::setGridSplitterSizes(m_view->getTheGridSplitterSizes());
-  //FIXED Settings::writeConfig();
-  Settings::self()->writeConfig();
+  Settings::self()->save();
   //Close only by admin user. or ask for password??
   if (Settings::allowAnyUserToQuit())
   {
@@ -813,6 +813,6 @@ void iotpos::salir()
 {
   if (queryClose()) {
     qDebug()<<"===EXIT IOTPOS AT "<<QDateTime::currentDateTime().toString();
-    kapp->quit();
+    QApplication::quit();
   }
 }

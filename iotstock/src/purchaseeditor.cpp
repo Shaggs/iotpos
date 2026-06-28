@@ -715,7 +715,7 @@ void PurchaseEditor::insertProduct(ProductInfo info)
       }
     }
     
-    ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->tableView->resizeRowsToContents();
     //totalBuy = totalBuy + info.cost*info.purchaseQty;
     //itemCount = itemCount + info.purchaseQty;

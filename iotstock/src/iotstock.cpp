@@ -538,5 +538,3 @@ void iotstock::salir()
 {
   qApp->quit();
 }
-
-#include "iotstock.moc"

@@ -4327,5 +4327,3 @@ void iotstockView::categoriesOnSelected(const QModelIndex &index)
         delete myDb;
     }
 }
-
-#include "iotstockview.moc"

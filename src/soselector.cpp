@@ -201,7 +201,7 @@ void SOSelector::setupModel()
   ui->tableWidget->resizeColumnsToContents();
 
   //changed here because when assigning the date to the datePicker this signal was causing to apply the filter which caused a crash due to that at such time the model was not set up.
-  connect( ui->datePicker, SIGNAL(changed(QDate)), SLOT(applyFilter()) );
+  connect( ui->datePicker, SIGNAL(dateChanged(QDate)), SLOT(applyFilter()) );
 }
 
 void SOSelector::setDb(QSqlDatabase database)

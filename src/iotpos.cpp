@@ -23,17 +23,17 @@
 #include "enums.h"
 
 #include "iconutils.h"
-#include <kmenubar.h>
-#include <kstatusbar.h>
-#include <kconfigdialog.h>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <KConfigDialog>
 #include <QFileDialog>
-#include <kactioncollection.h>
+#include <KActionCollection>
 #include <QAction>
-#include <kstandardaction.h>
+#include <KStandardAction>
 #include <QLocale>
 #include <KNotification>
 
-#include <ktoolbar.h>
+#include <KToolBar>
 
 
 #include <QListWidgetItem>

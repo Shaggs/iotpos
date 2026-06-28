@@ -68,6 +68,7 @@ add_executable(iotpos ${iotpos_SRCS})
 
 target_link_libraries(iotpos
   KF5::CoreAddons
+  KF5::Completion
   KF5::ConfigCore
   KF5::ConfigWidgets
   KF5::I18n

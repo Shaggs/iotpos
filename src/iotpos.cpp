@@ -22,14 +22,13 @@
 #include "settings.h"
 #include "enums.h"
 
-#include <kdeversion.h>
-#include <kiconloader.h>
+#include "iconutils.h"
 #include <kmenubar.h>
 #include <kstatusbar.h>
 #include <kconfigdialog.h>
-#include <kfiledialog.h>
+#include <QFileDialog>
 #include <kactioncollection.h>
-#include <kaction.h>
+#include <QAction>
 #include <kstandardaction.h>
 #include <QLocale>
 #include <KNotification>
@@ -79,10 +78,10 @@ iotpos::iotpos()
     QLabel *imageDate = new QLabel("date");
     QLabel *imageTime = new QLabel("time");
     QLabel *imageTransaction = new QLabel("trans");
-    imageUser->setPixmap(DesktopIcon("user-identity", 16));
-    imageDate->setPixmap(DesktopIcon("view-pim-calendar", 16));
-    imageTime->setPixmap(DesktopIcon("chronometer", 16));
-    imageTransaction->setPixmap(DesktopIcon("wallet-open", 16));
+    imageUser->setPixmap(themedPixmap("user-identity", 16));
+    imageDate->setPixmap(themedPixmap("view-pim-calendar", 16));
+    imageTime->setPixmap(themedPixmap("chronometer", 16));
+    imageTransaction->setPixmap(themedPixmap("wallet-open", 16));
     updateDate();
     statusBar()->addWidget(imageUser);
     statusBar()->addWidget(labelUserInfo);
@@ -154,31 +153,31 @@ void iotpos::setupActions()
     //Our actions
   QAction* loginAction =  actionCollection()->addAction( "login" );
   loginAction->setText(i18n("Login"));
-  loginAction->setIcon(KIcon("office-address-book")); //identity
+  loginAction->setIcon(themedIcon("office-address-book")); //identity
   loginAction->setShortcut(Qt::CTRL+Qt::Key_L);
   connect(loginAction, SIGNAL(triggered(bool)),m_view, SLOT(login()));
 
   QAction *corteCajaAction = actionCollection()->addAction("balance");
   corteCajaAction->setText(i18nc("Account balance", "Balance"));
-  corteCajaAction->setIcon(KIcon("iotpos-balance"));
+  corteCajaAction->setIcon(themedIcon("iotpos-balance"));
   corteCajaAction->setShortcut(Qt::CTRL+Qt::Key_B);
   connect(corteCajaAction, SIGNAL(triggered(bool)), m_view, SLOT(doCorteDeCaja()));
 
   QAction* enterCodeAction = actionCollection()->addAction( "enterCode" );
   enterCodeAction->setText(i18n("Enter Code"));
-  enterCodeAction->setIcon(KIcon("iotpos-tag"));
+  enterCodeAction->setIcon(themedIcon("iotpos-tag"));
   enterCodeAction->setShortcut(Qt::Key_F2);
   connect(enterCodeAction, SIGNAL(triggered(bool)),m_view, SLOT(showEnterCodeWidget()));
 
   QAction* searchItemAction = actionCollection()->addAction( "searchItem" );
   searchItemAction->setText(i18n("Search Item"));
-  searchItemAction->setIcon(KIcon("edit-find"));
+  searchItemAction->setIcon(themedIcon("edit-find"));
   searchItemAction->setShortcut(Qt::Key_F3);
   connect(searchItemAction, SIGNAL(triggered(bool)),m_view, SLOT(showSearchItemWidget()));
 
   QAction* delSelectedItemAction = actionCollection()->addAction( "deleteSelectedItem" );
   delSelectedItemAction->setText(i18n("Delete Selected Item"));
-  delSelectedItemAction->setIcon(KIcon("iotpos-boxcancel"));
+  delSelectedItemAction->setIcon(themedIcon("iotpos-boxcancel"));
   delSelectedItemAction->setShortcut(QKeySequence::ZoomOut); //Qt::Key_Delete  Qt::Key_Control+Qt::Key_Delete  QKeySequence::Cut QKeySequence::ZoomOut
   connect(delSelectedItemAction, SIGNAL(triggered(bool)),m_view, SLOT(deleteSelectedItem()));
   // ERROR: I dont know why, in my computer, instead of CTRL-Delete, the key assigned is Shift-(
@@ -188,83 +187,83 @@ void iotpos::setupActions()
 
   QAction* finishTransactionAction = actionCollection()->addAction( "finishTransaction" );
   finishTransactionAction->setText(i18n("Finish transaction"));
-  finishTransactionAction->setIcon(KIcon("iotpos-transaction-accept"));
+  finishTransactionAction->setIcon(themedIcon("iotpos-transaction-accept"));
   finishTransactionAction->setShortcut(Qt::Key_F12);
   connect(finishTransactionAction, SIGNAL(triggered(bool)),m_view, SLOT(finishCurrentTransaction()));
 
   QAction* cancelTransactionAction = actionCollection()->addAction( "cancelTransaction" );
   cancelTransactionAction->setText(i18n("Cancel transaction"));
-  cancelTransactionAction->setIcon(KIcon("iotpos-transaction-cancel"));
+  cancelTransactionAction->setIcon(themedIcon("iotpos-transaction-cancel"));
   cancelTransactionAction->setShortcut(Qt::Key_F10);
   connect(cancelTransactionAction, SIGNAL(triggered(bool)),m_view, SLOT(preCancelCurrentTransaction()));
 
   QAction* cancelSellAction = actionCollection()->addAction("cancelTicket");
   cancelSellAction->setText(i18n("Cancel a ticket"));
-  cancelSellAction->setIcon(KIcon("iotpos-ticket-cancel") );
+  cancelSellAction->setIcon(themedIcon("iotpos-ticket-cancel") );
   cancelSellAction->setShortcut(Qt::Key_F11);
   connect(cancelSellAction, SIGNAL(triggered(bool)),m_view, SLOT(askForIdToCancel()));
 
       //NOTE: This action is for setting how much money is on the drawer...
   QAction* startOperationAction = actionCollection()->addAction( "startOperation" );
   startOperationAction->setText(i18n("Start Operation"));
-  startOperationAction->setIcon(KIcon("window-new"));
+  startOperationAction->setIcon(themedIcon("window-new"));
   startOperationAction->setShortcut(QKeySequence::New); // New Qt::Key_Control+Qt::Key_N
   connect(startOperationAction, SIGNAL(triggered(bool)),m_view, SLOT(_slotDoStartOperation()));
 
   QAction *payFocusAction = actionCollection()->addAction("payFocus");
   payFocusAction->setText(i18n("Pay focus"));
-  payFocusAction->setIcon(KIcon("iotpos-payfocus"));
+  payFocusAction->setIcon(themedIcon("iotpos-payfocus"));
   payFocusAction->setShortcut(Qt::Key_F4); //Qt::Key_Alt + Qt::Key_End
   connect(payFocusAction, SIGNAL(triggered(bool)),m_view, SLOT(focusPayInput()));
 
   QAction *showProdGridAction = actionCollection()->addAction("showProductsGrid");
   showProdGridAction->setCheckable(true);
   showProdGridAction->setText(i18n("Show/Hide Products Grid"));
-  showProdGridAction->setIcon(KIcon("view-split-top-bottom"));
+  showProdGridAction->setIcon(themedIcon("view-split-top-bottom"));
   showProdGridAction->setShortcut(QKeySequence::Print);
   connect(showProdGridAction, SIGNAL(toggled(bool)), m_view, SLOT(showProductsGrid(bool)));
   qDebug()<<"Show Grid shortcut:"<<showProdGridAction->shortcuts();
 
   QAction *showPriceCheckerAction = actionCollection()->addAction("showPriceChecker");
   showPriceCheckerAction->setText(i18n("Show Price Checker"));
-  showPriceCheckerAction->setIcon(KIcon("iotpos-price-checker"));
+  showPriceCheckerAction->setIcon(themedIcon("iotpos-price-checker"));
   showPriceCheckerAction->setShortcut(Qt::Key_F9);
   connect(showPriceCheckerAction, SIGNAL(triggered(bool)), m_view, SLOT(showPriceChecker()));
 
   QAction *reprintTicketAction = actionCollection()->addAction("reprintTicket");
   reprintTicketAction->setText(i18n("Reprint ticket"));
-  reprintTicketAction->setIcon(KIcon("iotpos-print-ticket"));
+  reprintTicketAction->setIcon(themedIcon("iotpos-print-ticket"));
   reprintTicketAction->setShortcut(Qt::Key_F5);
   connect(reprintTicketAction, SIGNAL(triggered(bool)), m_view, SLOT(showReprintTicket()));
 
   QAction *cashOutAction = actionCollection()->addAction("cashOut");
   cashOutAction->setText(i18n("Cash Out"));
-  cashOutAction->setIcon(KIcon("iotpos-cashout"));
+  cashOutAction->setIcon(themedIcon("iotpos-cashout"));
   cashOutAction->setShortcut(Qt::Key_F7); //F7
   connect(cashOutAction, SIGNAL(triggered(bool)), m_view, SLOT(cashOut()));
 
   QAction *cashAvailableAction = actionCollection()->addAction("cashAvailable");
   cashAvailableAction->setText(i18n("Cash in drawer"));
-  cashAvailableAction->setIcon(KIcon("iotpos-money"));
+  cashAvailableAction->setIcon(themedIcon("iotpos-money"));
   cashAvailableAction->setShortcut(Qt::Key_F6);
   connect(cashAvailableAction, SIGNAL(triggered(bool)), m_view, SLOT(cashAvailable()));
 
   QAction *cashInAction = actionCollection()->addAction("cashIn");
   cashInAction->setText(i18n("Cash In"));
-  cashInAction->setIcon(KIcon("iotpos-cashin"));
+  cashInAction->setIcon(themedIcon("iotpos-cashin"));
   cashInAction->setShortcut(Qt::Key_F8); //F8
   connect(cashInAction, SIGNAL(triggered(bool)), m_view, SLOT(cashIn()));
 
   QAction *endOfDayAction = actionCollection()->addAction("endOfDay");
   endOfDayAction->setText(i18n("End of day report"));
-  endOfDayAction->setIcon(KIcon("go-jump-today"));
+  endOfDayAction->setIcon(themedIcon("go-jump-today"));
   endOfDayAction->setShortcut(QKeySequence::Close);
   connect(endOfDayAction, SIGNAL(triggered(bool)), m_view, SLOT(endOfDay()));
   qDebug()<<"End of day shortcut:"<<endOfDayAction->shortcuts();
 
   QAction *soAction = actionCollection()->addAction("specialOrder");
   soAction->setText(i18n("Add Special Order"));
-  soAction->setIcon(KIcon("iotpos-box"));
+  soAction->setIcon(themedIcon("iotpos-box"));
   soAction->setShortcut(Qt::Key_PageUp);
   connect(soAction, SIGNAL(triggered(bool)), m_view, SLOT(addSpecialOrder()));
   qDebug()<<"SpecialOrder shortcut:"<<soAction->shortcuts();
@@ -272,70 +271,70 @@ void iotpos::setupActions()
 
   QAction *socAction = actionCollection()->addAction("specialOrderComplete");
   socAction->setText(i18n("Complete Special Order"));
-  socAction->setIcon(KIcon("iotpos-box"));
+  socAction->setIcon(themedIcon("iotpos-box"));
   socAction->setShortcut(Qt::Key_PageDown);
   connect(socAction, SIGNAL(triggered(bool)), m_view, SLOT(specialOrderComplete()));
   qDebug()<<"SpecialOrder Complete shortcut:"<<socAction->shortcuts();
 
   QAction *lockAction = actionCollection()->addAction("lockScreen");
   lockAction->setText(i18n("Lock Screen"));
-  lockAction->setIcon(KIcon("iotpos-box")); //TODO:CREATE ICON!
+  lockAction->setIcon(themedIcon("iotpos-box")); //TODO:CREATE ICON!
   lockAction->setShortcut(Qt::CTRL+Qt::Key_Space);
   connect(lockAction, SIGNAL(triggered(bool)), m_view, SLOT(lockScreen()));
   qDebug()<<"LockScreen shortcut:"<<lockAction->shortcuts();
 
   QAction *suspendSaleAction = actionCollection()->addAction("suspendSale");
   suspendSaleAction->setText(i18n("Suspend Sale"));
-  suspendSaleAction->setIcon(KIcon("iotpos-suspend"));
+  suspendSaleAction->setIcon(themedIcon("iotpos-suspend"));
   suspendSaleAction->setShortcut(Qt::CTRL+Qt::Key_Backspace);
   connect(suspendSaleAction, SIGNAL(triggered(bool)), m_view, SLOT( suspendSale() ));
   qDebug()<<"Suspend Sale shortcut:"<<suspendSaleAction->shortcuts();
 
   QAction *soStatusAction = actionCollection()->addAction("soStatus");
   soStatusAction->setText(i18n("Change Special Order Status"));
-  soStatusAction->setIcon(KIcon("iotpos-box")); //TODO:CREATE ICON!
+  soStatusAction->setIcon(themedIcon("iotpos-box")); //TODO:CREATE ICON!
   soStatusAction->setShortcut(Qt::CTRL+Qt::Key_PageUp);
   connect(soStatusAction, SIGNAL(triggered(bool)), m_view, SLOT( changeSOStatus() ));
   qDebug()<<"soStatus shortcut:"<<soStatusAction->shortcuts();
 
   QAction *oDiscAction = actionCollection()->addAction("occasionalDiscount");
   oDiscAction->setText(i18n("Change Special Order Status"));
-  oDiscAction->setIcon(KIcon("iotpos-money")); //TODO:CREATE ICON!
+  oDiscAction->setIcon(themedIcon("iotpos-money")); //TODO:CREATE ICON!
   oDiscAction->setShortcut(Qt::CTRL+Qt::Key_D);
   connect(oDiscAction, SIGNAL(triggered(bool)), m_view, SLOT( occasionalDiscount() ));
   qDebug()<<"occasionalDiscount shortcut:"<<oDiscAction->shortcuts();
 
   QAction *resumeAction = actionCollection()->addAction("resumeSale");
   resumeAction->setText(i18n("Resume Sale"));
-  resumeAction->setIcon(KIcon("iotpos-resume"));
+  resumeAction->setIcon(themedIcon("iotpos-resume"));
   resumeAction->setShortcut(Qt::CTRL+Qt::Key_R);
   connect(resumeAction, SIGNAL(triggered(bool)), m_view, SLOT( resumeSale() ));
   qDebug()<<"resumeSale shortcut:"<<resumeAction->shortcuts();
 
   QAction *makeReservationA = actionCollection()->addAction("makeReservation");
   makeReservationA->setText(i18n("Reserve Items"));
-  makeReservationA->setIcon(KIcon("iotpos-reservation"));
+  makeReservationA->setIcon(themedIcon("iotpos-reservation"));
   makeReservationA->setShortcut(Qt::ALT + Qt::Key_R); // Qt::ALT is the left ALT key ( not the Alt Gr )
   connect(makeReservationA, SIGNAL(triggered(bool)), m_view, SLOT( reserveItems() ));
   qDebug()<<"makeReservation shortcut:"<<makeReservationA->shortcuts();
 
   QAction *resumeRAction = actionCollection()->addAction("resumeReservation");
   resumeRAction->setText(i18n("Reservations"));
-  resumeRAction->setIcon(KIcon("iotpos-reservation-view"));
+  resumeRAction->setIcon(themedIcon("iotpos-reservation-view"));
   resumeRAction->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_R);
   connect(resumeRAction, SIGNAL(triggered(bool)), m_view, SLOT( resumeReservation() ));
   qDebug()<<"Reservations shortcut:"<<resumeRAction->shortcuts();
 
   QAction *showCreditsAction = actionCollection()->addAction("showCredits");
   showCreditsAction->setText(i18n("Show Credits"));
-  showCreditsAction->setIcon(KIcon("iotpos-credits"));
+  showCreditsAction->setIcon(themedIcon("iotpos-credits"));
   showCreditsAction->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_C);
   connect(showCreditsAction, SIGNAL(triggered(bool)), m_view, SLOT( showCredits() ));
   qDebug()<<"ShowCredits shortcut:"<<showCreditsAction->shortcuts();
 
   QAction *addResPaymentAction = actionCollection()->addAction("addReservationPayment");
   addResPaymentAction->setText(i18n("Add Reservation Payment"));
-  addResPaymentAction->setIcon(KIcon("iotpos-reservation-payment"));
+  addResPaymentAction->setIcon(themedIcon("iotpos-reservation-payment"));
   addResPaymentAction->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_P);
   connect(addResPaymentAction, SIGNAL(triggered(bool)), m_view, SLOT( addReservationPayment() ));
   qDebug()<<"ReservationPayment shortcut:"<<addResPaymentAction->shortcuts();
@@ -522,7 +521,7 @@ void iotpos::reactOnLogOn()
     if (m_view->getLoggedUserRole() == roleBasic ) {
       KNotification *notify = new KNotification("information", this);
       notify->setText(msg);
-      QPixmap pixmap = DesktopIcon("dialog-information",48);
+      QPixmap pixmap = themedPixmap("dialog-information",48);
       notify->setPixmap(pixmap);
       notify->sendEvent();
     }

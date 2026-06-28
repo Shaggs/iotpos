@@ -297,6 +297,3 @@ void InputDialog::setProductCodeReadOnly()
   productCodeEdit->setReadOnly(true);
   lineEdit->setFocus();
 }
-
-#include "inputdialog.moc"
-

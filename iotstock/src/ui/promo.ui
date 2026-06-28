@@ -188,7 +188,7 @@
   <customwidget>
    <class>KDatePicker</class>
    <extends>QFrame</extends>
-   <header>kdatepicker.h</header>
+   <header>KDatePicker</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

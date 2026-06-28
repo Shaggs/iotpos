@@ -54,7 +54,7 @@ int main(int argc, char **argv)
         i18n("(C) 2013-2017 Hiram Ronquillo Villarreal"),
         QString(),
         QString(),
-        QStringLiteral("hiramvillarreal.ap@gmail.com")
+        "hiramvillarreal.ap@gmail.com"
     );
     about.addAuthor( i18n("Hiram Ronquillo Villarreal"), QString(), QStringLiteral("hiramvillarreal.ap@gmail.com") );
     about.setBugAddress("hiramvillarreal.ap@gmail.com");

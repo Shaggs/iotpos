@@ -21,7 +21,7 @@
 #define _InputDialog_H_
 
 #include <QtGui>
-#include <klineedit.h>
+#include <KLineEdit>
 
 enum DialogType       {dialogMoney=0, dialogMeasures=1, dialogTicket=3, dialogCashOut=4, dialogStockCorrection=5, dialogTerminalNum=6, dialogSpecialOrder=7, dialogTicketMsg=8, dialogCurrency=9 };
 

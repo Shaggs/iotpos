@@ -163,7 +163,7 @@
         </widget>
        </item>
        <item>
-        <widget class="KDateWidget" name="datePicker"/>
+        <widget class="QDateEdit" name="datePicker"/>
        </item>
       </layout>
      </item>
@@ -211,11 +211,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>editSaleId</tabstop>

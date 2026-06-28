@@ -79,6 +79,7 @@ target_link_libraries(iotpos
   KF5::XmlGui
   Qt5::PrintSupport
   Qt5::Sql
+  Qt5::Svg
   Qt5::Widgets
 )
 

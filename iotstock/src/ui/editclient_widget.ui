@@ -280,7 +280,7 @@
     </widget>
    </item>
    <item row="6" column="2" colspan="4">
-    <widget class="KDateWidget" name="sinceDatePicker" native="true">
+    <widget class="QDateEdit" name="sinceDatePicker" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -302,11 +302,6 @@
    <class>MibitLineEdit</class>
    <extends>QLineEdit</extends>
    <header>../../mibitWidgets/mibitlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

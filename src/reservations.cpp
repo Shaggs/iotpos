@@ -20,6 +20,7 @@
 #include <QLocale>
 #include <KMessageBox>
 #include "localeutils.h"
+#include "iconutils.h"
 #include "pathutils.h"
 #include <KNotification>
 
@@ -237,7 +238,7 @@ void ReservationsDialog::cancelReservation()
             QString paymentStr = LocaleUtils::formatMoney(payment, QString(), 2);
             KNotification *notify = new KNotification("information", this);
             notify->setText(i18n("The reimbursement for the reservation is %1. Get it from the drawer.", paymentStr));
-            QPixmap pixmap = DesktopIcon("dialog-information",32);
+            QPixmap pixmap = themedPixmap("dialog-information",32);
             notify->setPixmap(pixmap);
             notify->sendEvent();
             if (Settings::openDrawer() && Settings::smallTicketDotMatrix() && Settings::printTicket())
@@ -247,7 +248,7 @@ void ReservationsDialog::cancelReservation()
             //NOT ENOUGH CASH!
             KNotification *notify = new KNotification("information", this);
             notify->setText(i18n("There is not enough cash available in the drawer."));
-            QPixmap pixmap = DesktopIcon("dialog-information",32);
+            QPixmap pixmap = themedPixmap("dialog-information",32);
             notify->setPixmap(pixmap);
             notify->sendEvent();
             doIt = false;

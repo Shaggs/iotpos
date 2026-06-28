@@ -6709,9 +6709,6 @@ BasketPriceSummary iotposView::recalculateBasket(double oDiscountMoney) {
 
     return summary;
 }
-
-#include "iotposview.moc"
-
 void iotposView::on_rbFilterByCategory_clicked()
 {
     ui_mainview.editItemCode->clear();

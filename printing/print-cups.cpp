@@ -1122,7 +1122,7 @@ bool PrintCUPS::printBigTicket(const PrintTicketInfo &ptInfo, QPrinter &printer)
   yPos = yPos + fm.lineSpacing();
   // NOTE: I think its redundant to say again the savings.
   //if (tDisc > 0) {
- //    painter.drawText(Margin, Margin + yPos , line = i18n("You saved %1", KGlobal::locale()->formatMoney(tDisc, QString(), 2)););
+
  //    yPos = yPos + fm.lineSpacing();
  //}
  

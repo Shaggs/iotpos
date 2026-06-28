@@ -113,6 +113,3 @@ void PriceChecker::setDb(QSqlDatabase database)
 {
   myDb->setDatabase(database);
 }
-
-
-#include "pricechecker.moc"

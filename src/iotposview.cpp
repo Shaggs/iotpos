@@ -84,10 +84,9 @@
 
 
 #include <KLocalizedString>
-#include <kiconloader.h>
+#include "iconutils.h"
 #include "pathutils.h"
 #include <kmessagebox.h>
-#include <kpassivepopup.h>
 #include <KNotification>
 #include <QFile>
 #include <iostream>
@@ -212,16 +211,16 @@ iotposView::iotposView() //: QWidget(parent)
   //MibitTips
   QString path = PathUtils::locateAppData("styles/");
   path = path+"tip.svg";
-  tipCode   = new MibitTip(this, ui_mainview.editItemCode, path, DesktopIcon("dialog-warning",32) );
+  tipCode   = new MibitTip(this, ui_mainview.editItemCode, path, themedPixmap("dialog-warning",32) );
   path = PathUtils::locateAppData("styles/")+"rotated_tip.svg";
-  tipAmount = new MibitTip(this, ui_mainview.groupPayment, path, DesktopIcon("dialog-warning",32), tpAbove );
+  tipAmount = new MibitTip(this, ui_mainview.groupPayment, path, themedPixmap("dialog-warning",32), tpAbove );
 
 
   QTimer::singleShot(1000, this, SLOT(setupGridView()));
 
   //MibitPasswordDialog
   path = PathUtils::locateAppData("styles/") + "dialog.svg";
-  lockDialog = new MibitPasswordDialog(this, "text", path, DesktopIcon("object-locked",64));
+  lockDialog = new MibitPasswordDialog(this, "text", path, themedPixmap("object-locked",64));
   lockDialog->setSize(300,150);
   lockDialog->setTextColor("Yellow");//Ensure to pass a valid Qt-CSS color name.
   lockDialog->setShakeTTL(3000);
@@ -263,7 +262,7 @@ iotposView::iotposView() //: QWidget(parent)
 
   path = PathUtils::locateAppData("styles/");
   path = path+"tip.svg";
-  notifierPanel = new MibitNotifier(this,path, DesktopIcon("dialog-warning", 32));
+  notifierPanel = new MibitNotifier(this,path, themedPixmap("dialog-warning", 32));
 
 
   refreshTotalLabel();
@@ -593,7 +592,7 @@ void iotposView::setupGridView()
 
 void iotposView::loadIcons()
 {
-  ui_mainview.labelImageSearch->setPixmap(DesktopIcon("edit-find", 64));
+  ui_mainview.labelImageSearch->setPixmap(themedPixmap("edit-find", 64));
   QString logoBottomFile = PathUtils::locateAppData("images/logo_bottom.png");
   ui_mainview.labelBanner->setPixmap(QPixmap(logoBottomFile));
   ui_mainview.labelBanner->setAlignment(Qt::AlignCenter);
@@ -1169,7 +1168,11 @@ void iotposView::login()
   if (!db.isOpen()) {
     qDebug()<<"(login): Still unable to open connection to database....";
     QString msg = i18n("Could not connect to database, please press 'login' button again to raise a database configuration.");
-    KPassivePopup::message( i18n("Error:"),msg, DesktopIcon("dialog-error", 48), this );
+    KNotification *notify = new KNotification(QStringLiteral("databaseError"), this);
+    notify->setTitle(i18n("Error"));
+    notify->setText(msg);
+    notify->setIconName(QStringLiteral("dialog-error"));
+    notify->sendEvent();
   } else {
     if ( dlgLogin->exec() ) {
       loggedUser     = dlgLogin->username();
@@ -1678,7 +1681,7 @@ void iotposView::insertItem(QString code)
   if ( !specialOrders.isEmpty() ) {
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("Only Special Orders can be added. Please finish the current special order before adding any other product."));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     ui_mainview.editItemCode->clear();
@@ -1689,7 +1692,7 @@ qDebug()<< __FUNCTION__ <<" doNotAddMoreItems = "<<doNotAddMoreItems;
 if ( doNotAddMoreItems ) { //only for reservations
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("Cannot Add more items to the Reservation."));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     ui_mainview.editItemCode->clear();
@@ -2141,7 +2144,7 @@ void iotposView::deleteSelectedItem()
   if (startingReservation || finishingReservation) {
       KNotification *notify = new KNotification("information", this);
       notify->setText(i18n("Cannot delete items from a reservation."));
-      QPixmap pixmap = DesktopIcon("dialog-information",32);
+      QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
       notify->sendEvent();
       return;
@@ -3035,7 +3038,7 @@ void iotposView::finishCurrentTransaction()
        //KMessageBox::error(this, i18n("The Drawer is not initialized, please start operation first."), i18n("Error") );
       KNotification *notify = new KNotification("information", this);
       notify->setText(i18n("The Drawer is not initialized, please start operation first."));
-      QPixmap pixmap = DesktopIcon("dialog-information",32);
+      QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
       notify->sendEvent();
     }
@@ -3125,10 +3128,10 @@ void iotposView::finishCurrentTransaction()
 
     //Check level of cash in drawer
     if (drawer->getAvailableInCash() < Settings::cashMinLevel() && Settings::displayWarningOnLowCash()) {
-      //KPassivePopup::message( i18n("Warning:"),i18n("Cash level in drawer is low."),DesktopIcon("dialog-warning", 48), this);
+      
       KNotification *notify = new KNotification("information", this);
       notify->setText(i18n("Cash level in drawer is low."));
-      QPixmap pixmap = DesktopIcon("dialog-warning",32); //NOTE: This does not works
+      QPixmap pixmap = themedPixmap("dialog-warning",32); //NOTE: This does not works
       notify->setPixmap(pixmap);
       notify->sendEvent();
     }
@@ -3157,7 +3160,7 @@ void iotposView::printTicket(TicketInfo ticket)
     freezeWidgets();
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("The ticket was not printed because it is ZERO in the amount to pay. Just to save trees."));
-    QPixmap pixmap = DesktopIcon("dialog-error",32);
+    QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     QTimer::singleShot(2000, this, SLOT(unfreezeWidgets()));
@@ -3586,7 +3589,7 @@ ptInfo.tDisc = LocaleUtils::formatMoney(-discMoney, QString(), 2);
 
   if (Settings::showDialogOnPrinting())
   {
-    TicketPopup *popup = new TicketPopup(ticketHtml.join(" "), DesktopIcon("iotpos-printer", 32), Settings::ticketTime()*1000);
+    TicketPopup *popup = new TicketPopup(ticketHtml.join(" "), themedPixmap("iotpos-printer", 32), Settings::ticketTime()*1000);
     connect (popup, SIGNAL(onTicketPopupClose()), this, SLOT(unfreezeWidgets()) );
     QApplication::beep();
     popup->popup();
@@ -3761,7 +3764,7 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
   if (tinfo.paymethod != 1 ) {
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("The ticket cannot be cancelled because it was paid with a credit/debit card."));
-    QPixmap pixmap = DesktopIcon("dialog-error",32);
+    QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     return;
@@ -3783,7 +3786,7 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
         //Inform to the user.
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("The ticket was sucessfully cancelled."));
-        QPixmap pixmap = DesktopIcon("dialog-error",32);
+        QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
       }
@@ -3795,7 +3798,7 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
       if (!transToCancelIsInProgress) {
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("Error cancelling ticket: %1",myDb->lastError()));
-        QPixmap pixmap = DesktopIcon("dialog-error",32);
+        QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
       } else {
@@ -3824,7 +3827,7 @@ void iotposView::cancelTransaction(qulonglong transactionNumber)
 
     KNotification *notify = new KNotification("information", this);
     notify->setText(msg);
-    QPixmap pixmap = DesktopIcon("dialog-error",32);
+    QPixmap pixmap = themedPixmap("dialog-error",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
   }
@@ -3948,7 +3951,7 @@ void iotposView::corteDeCaja()
   if (!yes) {
     //     KNotification *notify = new KNotification("information", this);
     //     notify->setText(i18n("There are no transactions to inform or cash in the drawer."));
-    //     QPixmap pixmap = DesktopIcon("dialog-information",32);
+    //     QPixmap pixmap = themedPixmap("dialog-information",32);
     //     notify->setPixmap(pixmap);
     //     if (!loggedUser.isEmpty())
     //       notify->sendEvent();
@@ -4895,7 +4898,7 @@ void iotposView::printSelTicket()
         qDebug()<<"No administrator password supplied for reprint ticket";
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("Reprint ticket cancelled."));
-        QPixmap pixmap = DesktopIcon("dialog-error",32);
+        QPixmap pixmap = themedPixmap("dialog-error",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
     }
@@ -5055,11 +5058,11 @@ void iotposView::cashOut()
   if (doit) {
     double max = drawer->getAvailableInCash();
     if (!max>0) {
-      //KPassivePopup::message( i18n("Error:"),i18n("Cash not available at drawer!"),DesktopIcon("dialog-error", 48), this );
+      
 
       KNotification *notify = new KNotification("information", this);
       notify->setText(i18n("Cash not available at drawer!"));
-      QPixmap pixmap = DesktopIcon("dialog-error",32);
+      QPixmap pixmap = themedPixmap("dialog-error",32);
       notify->setPixmap(pixmap);
       notify->sendEvent();
 
@@ -5141,7 +5144,7 @@ void iotposView::cashAvailable()
   double available = drawer->getAvailableInCash();
   KNotification *notify = new KNotification("information", this);
   notify->setText(i18n("There are <b> %1 in cash </b> available at the drawer.", LocaleUtils::formatMoney(available)));
-  QPixmap pixmap = DesktopIcon("dialog-information",32);
+  QPixmap pixmap = themedPixmap("dialog-information",32);
   notify->setPixmap(pixmap);
   notify->sendEvent();
 }
@@ -5162,7 +5165,7 @@ void iotposView::addSpecialOrder()
   if ( transactionInProgress && (totalSum >0) && specialOrders.isEmpty() ) {
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("Please finish the current transaction before creating a special order."));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     return;
@@ -5267,7 +5270,7 @@ void iotposView::specialOrderComplete()
   if ( transactionInProgress && (totalSum >0) ) {
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("Please finish the current transaction before completing a special order."));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     return;
@@ -5284,7 +5287,7 @@ void iotposView::specialOrderComplete()
     if (soList.isEmpty()) {
       KNotification *notify = new KNotification("information", this);
       notify->setText(i18n("The given ticket number does not contains any special order."));
-      QPixmap pixmap = DesktopIcon("dialog-information",32);
+      QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
       notify->sendEvent();
       return;
@@ -5312,7 +5315,7 @@ void iotposView::specialOrderComplete()
           qDebug()<<"This special order is completeley paid and marked as delivered without emiting a ticket.";
           KNotification *notify = new KNotification("information", this);
           notify->setText(i18n("The special order %1 in ticket %2 is completely paid. Marked as delivered.", soInfo.orderid, soInfo.saleid));
-          QPixmap pixmap = DesktopIcon("dialog-information",32);
+          QPixmap pixmap = themedPixmap("dialog-information",32);
           notify->setPixmap(pixmap);
           notify->sendEvent();
           continue; //dont insert this...
@@ -5373,7 +5376,7 @@ void iotposView::specialOrderComplete()
     if (paidOrders.count()> 1) { // the first is the pre-message
       KNotification *notify = new KNotification("information", this);
       notify->setText(paidOrders.join("\n"));
-      QPixmap pixmap = DesktopIcon("dialog-information",32);
+      QPixmap pixmap = themedPixmap("dialog-information",32);
       notify->setPixmap(pixmap);
       notify->sendEvent();
     }
@@ -5586,7 +5589,7 @@ void iotposView::suspendSale()
     //inform the user
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("The sale %1 has been sucessfully suspended.", tmpId));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
   }
@@ -5669,7 +5672,7 @@ void iotposView::changeSOStatus()
   if ( transactionInProgress && (totalSum >0) ) {
     KNotification *notify = new KNotification("information", this);
     notify->setText(i18n("Please finish the current transaction before changing state for a special order."));
-    QPixmap pixmap = DesktopIcon("dialog-information",32);
+    QPixmap pixmap = themedPixmap("dialog-information",32);
     notify->setPixmap(pixmap);
     notify->sendEvent();
     return;
@@ -5873,7 +5876,7 @@ void iotposView::reserveItems()
             //TODO: Replace this notify with a mibitLineEdit->VIBRAR, y mibitTip
             KNotification *notify = new KNotification("information", this);
             notify->setText(i18n("Please Enter the reservation Amount in the Payment Amount and try again."));
-            QPixmap pixmap = DesktopIcon("dialog-information",32);
+            QPixmap pixmap = themedPixmap("dialog-information",32);
             notify->setPixmap(pixmap);
             notify->sendEvent();
             ui_mainview.editAmount->setFocus();
@@ -6026,7 +6029,7 @@ void iotposView::reserveItems()
         //Cannot reserve empty product list!
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("Cannot make a reservation, no products on the list. Special Orders are not considered."));
-        QPixmap pixmap = DesktopIcon("dialog-information",32);
+        QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
     }
@@ -6051,7 +6054,7 @@ void iotposView::suspendReservation()
         //inform the user
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("The sale %1 has been sucessfully reserved.", tmpId));
-        QPixmap pixmap = DesktopIcon("dialog-information",32);
+        QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
     }
@@ -6157,7 +6160,7 @@ void iotposView::addReservationPayment()
     if (finishingReservation || startingReservation) {
         KNotification *notify = new KNotification("information", this);
         notify->setText(i18n("You need to finish or suspend the current sale or reservation before adding a payment for a reservation."));
-        QPixmap pixmap = DesktopIcon("dialog-information",32);
+        QPixmap pixmap = themedPixmap("dialog-information",32);
         notify->setPixmap(pixmap);
         notify->sendEvent();
         return;

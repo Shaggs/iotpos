@@ -25,7 +25,7 @@
 #include <QPaintEvent>
 #include <KLocalizedString>
 #include "pathutils.h"
-#include <kiconloader.h>
+#include "iconutils.h"
 
 #include "usersdelegate.h"
 
@@ -61,7 +61,7 @@ void UsersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     }
     else {
       //null pixmap, draw a default one...
-     pix = QPixmap(DesktopIcon("iotpos-user", 128));
+     pix = QPixmap(themedPixmap("iotpos-user", 128));
     }
     //Draw pixmap
     int max = 128;

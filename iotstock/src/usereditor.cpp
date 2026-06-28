@@ -20,7 +20,7 @@
  ***************************************************************************/
 #include <QLocale>
 #include <KMessageBox>
-#include <KFileDialog>
+#include <QFileDialog>
 
 #include <QByteArray>
 
@@ -54,7 +54,7 @@ UserEditor::~UserEditor()
 
 void UserEditor::changePhoto()
 {
-  QString fname = KFileDialog::getOpenFileName();
+  QString fname = QFileDialog::getOpenFileName();
   if (!fname.isEmpty()) {
     QPixmap p = QPixmap(fname);
     setPhoto(p);

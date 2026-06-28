@@ -14,7 +14,6 @@ PROJECT="squeeze"  # project name
 BUGADDR="http://sourceforge.net/tracker/?atid=1011570&group_id=209899&func=browse"
 WDIR=`pwd`          # working dir
 
-#MCH needed extractrc is from /opt/kde4/bin.
 
 echo ${PROJECT}
 echo "Preparing rc files"

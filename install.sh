@@ -12,6 +12,8 @@ sudo apt-get install \
   libkf5configwidgets-dev \
   libkf5i18n-dev \
   libkf5kio-dev \
+  libkf5notifications-dev \
+  libkf5plotting-dev \
   libkf5widgetsaddons-dev \
   libkf5xmlgui-dev \
   libqt5sql5-mysql \

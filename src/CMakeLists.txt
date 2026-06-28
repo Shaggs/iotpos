@@ -1,5 +1,5 @@
 #MCH: Deshabilitar debug (para alivianar el ejecutable).
-#     cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/opt/kde4
+#     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
 
 set(iotpos_SRCS
    iotpos.cpp
@@ -62,15 +62,17 @@ qt5_wrap_ui(iotpos_SRCS
   ../iotstock/src/ui/editclient_widget.ui
   )
 
-include(KConfigAddKcfgFiles)
 kconfig_add_kcfg_files(iotpos_SRCS settings.kcfgc)
 
 add_executable(iotpos ${iotpos_SRCS})
 
 target_link_libraries(iotpos
   KF5::CoreAddons
+  KF5::ConfigCore
   KF5::ConfigWidgets
   KF5::I18n
+  KF5::Notifications
+  KF5::Plotting
   KF5::KIOWidgets
   KF5::WidgetsAddons
   KF5::XmlGui
@@ -79,41 +81,36 @@ target_link_libraries(iotpos
   Qt5::Widgets
 )
 
-FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
+find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
-IF(NOT GETTEXT_MSGFMT_EXECUTABLE)
-        MESSAGE(
-"------
-                 NOTE: msgfmt not found. Translations will *not* be installed
-------")
-ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
+if(NOT GETTEXT_MSGFMT_EXECUTABLE)
+    message(STATUS "msgfmt not found; translations will not be installed")
+else()
+    set(catalogname iotpos)
+    file(GLOB PO_FILES CONFIGURE_DEPENDS po/*.po)
+    set(GMO_FILES)
 
-        SET(catalogname iotpos)
+    foreach(po_file IN LISTS PO_FILES)
+        get_filename_component(lang "${po_file}" NAME_WE)
+        set(gmo_file "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo")
+        add_custom_command(
+            OUTPUT "${gmo_file}"
+            COMMAND "${GETTEXT_MSGFMT_EXECUTABLE}" -o "${gmo_file}" "${po_file}"
+            DEPENDS "${po_file}"
+            VERBATIM
+        )
+        list(APPEND GMO_FILES "${gmo_file}")
+        install(
+            FILES "${gmo_file}"
+            DESTINATION "${KDE_INSTALL_LOCALEDIR}/${lang}/LC_MESSAGES"
+            RENAME "${catalogname}.mo"
+        )
+    endforeach()
 
-        ADD_CUSTOM_TARGET(translations ALL)
-
-        FILE(GLOB PO_FILES po/*.po)
-
-        FOREACH(_poFile ${PO_FILES})
-                GET_FILENAME_COMPONENT(_lang ${_poFile} NAME_WE)
-                SET(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_lang}.gmo)
-                ADD_CUSTOM_COMMAND(TARGET translations
-                        COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_poFile}
-                        DEPENDS ${_poFile})
-                INSTALL(FILES ${_gmoFile} DESTINATION ${KDE_INSTALL_LOCALEDIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
-        ENDFOREACH(_poFile ${PO_FILES})
-
-ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
+    add_custom_target(iotpos_translations ALL DEPENDS ${GMO_FILES})
+endif()
 
 install(TARGETS iotpos DESTINATION ${KDE_INSTALL_BINDIR})
-
-##### client #####
-#set(iotpos_client_SRCS
-#    iotpos_client.cpp
-# )
-#kde4_add_executable(iotpos_client ${iotpos_client_SRCS})
-#target_link_libraries(iotpos_client ${KDE4_KDECORE_LIBS})
-#install(TARGETS iotpos_client DESTINATION ${BIN_INSTALL_DIR} )
 
 ########### install files ###############
 

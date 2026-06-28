@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include <QLocale>
 #include <KMessageBox>
-#include <KFileDialog>
-#include <kiconloader.h>
+#include <QFileDialog>
+#include "iconutils.h"
 #include "pathutils.h"
 #include "../../src/localeutils.h"
 
@@ -92,7 +92,7 @@ PurchaseEditor::PurchaseEditor( QWidget *parent )
     
     QString path = PathUtils::locateAppData("styles/");
     path = path+"tip.svg";
-    errorPanel = new MibitTip(this, ui->widgetPurchase, path, DesktopIcon("dialog-warning",32) );
+    errorPanel = new MibitTip(this, ui->widgetPurchase, path, themedPixmap("dialog-warning",32) );
     
 
     lastCode = "";
@@ -316,7 +316,7 @@ QString PurchaseEditor::getMeasureStr(int c)
 
 void PurchaseEditor::changePhoto()
 {
- QString fname = KFileDialog::getOpenFileName();
+ QString fname = QFileDialog::getOpenFileName();
   if (!fname.isEmpty()) {
     QPixmap p = QPixmap(fname);
     setPhoto(p);

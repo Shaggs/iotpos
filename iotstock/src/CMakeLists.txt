@@ -43,41 +43,46 @@ qt5_wrap_ui(iotstock_SRCS
   )
 
 
-include(KConfigAddKcfgFiles)
 kconfig_add_kcfg_files(iotstock_SRCS settings.kcfgc)
 
 add_executable(iotstock ${iotstock_SRCS})
 
-FIND_PROGRAM(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
+find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
-IF(NOT GETTEXT_MSGFMT_EXECUTABLE)
-        MESSAGE(
-"------
-                 NOTE: msgfmt not found. Translations will *not* be installed
-------")
-ELSE(NOT GETTEXT_MSGFMT_EXECUTABLE)
+if(NOT GETTEXT_MSGFMT_EXECUTABLE)
+    message(STATUS "msgfmt not found; translations will not be installed")
+else()
+    set(catalogname iotstock)
+    file(GLOB PO_FILES CONFIGURE_DEPENDS po/*.po)
+    set(GMO_FILES)
 
-        SET(catalogname iotstock)
+    foreach(po_file IN LISTS PO_FILES)
+        get_filename_component(lang "${po_file}" NAME_WE)
+        set(gmo_file "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo")
+        add_custom_command(
+            OUTPUT "${gmo_file}"
+            COMMAND "${GETTEXT_MSGFMT_EXECUTABLE}" -o "${gmo_file}" "${po_file}"
+            DEPENDS "${po_file}"
+            VERBATIM
+        )
+        list(APPEND GMO_FILES "${gmo_file}")
+        install(
+            FILES "${gmo_file}"
+            DESTINATION "${KDE_INSTALL_LOCALEDIR}/${lang}/LC_MESSAGES"
+            RENAME "${catalogname}.mo"
+        )
+    endforeach()
 
-        ADD_CUSTOM_TARGET(translations ALL)
-
-        FILE(GLOB PO_FILES po/*.po)
-
-        FOREACH(_poFile ${PO_FILES})
-                GET_FILENAME_COMPONENT(_lang ${_poFile} NAME_WE)
-                SET(_gmoFile ${CMAKE_CURRENT_BINARY_DIR}/${_lang}.gmo)
-                ADD_CUSTOM_COMMAND(TARGET translations
-                        COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_gmoFile} ${_poFile}
-                        DEPENDS ${_poFile})
-                INSTALL(FILES ${_gmoFile} DESTINATION ${KDE_INSTALL_LOCALEDIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
-        ENDFOREACH(_poFile ${PO_FILES})
-
-ENDIF(NOT GETTEXT_MSGFMT_EXECUTABLE)
+    add_custom_target(iotstock_translations ALL DEPENDS ${GMO_FILES})
+endif()
 
 target_link_libraries(iotstock
   KF5::CoreAddons
+  KF5::ConfigCore
   KF5::ConfigWidgets
   KF5::I18n
+  KF5::Notifications
+  KF5::Plotting
   KF5::KIOWidgets
   KF5::WidgetsAddons
   KF5::XmlGui

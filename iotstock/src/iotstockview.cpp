@@ -65,11 +65,11 @@
 #include <QDir>
 
 #include <KLocalizedString>
-#include <kfiledialog.h>
-#include <kiconloader.h>
+#include <QFileDialog>
+#include "iconutils.h"
 #include <kmessagebox.h>
 #include <kactioncollection.h>
-#include <kaction.h>
+#include <QAction>
 #include "pathutils.h"
 
 #include <kplotobject.h>
@@ -105,7 +105,7 @@ iotstockView::iotstockView(QWidget *parent)
 
   
   ui_mainview.headerLabel->setText(i18n("Basic Information"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("view-statistics", 22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("view-statistics", 22)));
 
   ///other things
   counter = 5;
@@ -137,19 +137,19 @@ iotstockView::iotstockView(QWidget *parent)
   ui_mainview.logoLabel->setPixmap(QPixmap(logoBottomFile));
   ui_mainview.logoLabel->setAlignment(Qt::AlignCenter);
 
-  itmEndOfDay     = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("End of Day"), ui_mainview.reportsList);
-  itmGralEndOfDay = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("General End of Day"), ui_mainview.reportsList);
-  itmEndOfMonth   = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("End of Month"), ui_mainview.reportsList);
-  itmPrintSoldOutProducts = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("Sold Out Products"), ui_mainview.reportsList);
-  itmPrintLowStockProducts = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("Low Stock Products"), ui_mainview.reportsList);
-  itmPrintStock   = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("Stock Report"), ui_mainview.reportsList);
-  //itmPrintBalance = new QListWidgetItem(DesktopIcon("iotpos-reports", 96), i18n("A Balance"), ui_mainview.reportsList);
+  itmEndOfDay     = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("End of Day"), ui_mainview.reportsList);
+  itmGralEndOfDay = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("General End of Day"), ui_mainview.reportsList);
+  itmEndOfMonth   = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("End of Month"), ui_mainview.reportsList);
+  itmPrintSoldOutProducts = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("Sold Out Products"), ui_mainview.reportsList);
+  itmPrintLowStockProducts = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("Low Stock Products"), ui_mainview.reportsList);
+  itmPrintStock   = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("Stock Report"), ui_mainview.reportsList);
+  //itmPrintBalance = new QListWidgetItem(themedPixmap("iotpos-reports", 96), i18n("A Balance"), ui_mainview.reportsList);
 
   
-  ui_mainview.btnBalances->setIcon(DesktopIcon("iotposbalance", 22));
-  ui_mainview.btnCashFlow->setIcon(DesktopIcon("iotpos-cashout", 22));
-  ui_mainview.btnTransactions->setIcon(DesktopIcon("wallet-open", 22));
-  ui_mainview.btnSO->setIcon(DesktopIcon("iotpos-box", 22));
+  ui_mainview.btnBalances->setIcon(themedPixmap("iotposbalance", 22));
+  ui_mainview.btnCashFlow->setIcon(themedPixmap("iotpos-cashout", 22));
+  ui_mainview.btnTransactions->setIcon(themedPixmap("wallet-open", 22));
+  ui_mainview.btnSO->setIcon(themedPixmap("iotpos-box", 22));
 
 
   QTimer::singleShot(500,this, SLOT(createFloatingPanels()) );
@@ -157,7 +157,7 @@ iotstockView::iotstockView(QWidget *parent)
 
   logoBottomFile = PathUtils::locateAppData("styles/");
   logoBottomFile = logoBottomFile+"tip.svg";
-  notifierPanel = new MibitNotifier(this,logoBottomFile, DesktopIcon("dialog-warning", 22));
+  notifierPanel = new MibitNotifier(this,logoBottomFile, themedPixmap("dialog-warning", 22));
 
 }
 
@@ -210,10 +210,9 @@ void iotstockView::login(){
   }
   if (!db.isOpen()) {
     QString details = db.lastError().text();
-    //KPassivePopup::message( i18n("Error:"),details, DesktopIcon("dialog-error", 22), this );
     KNotification *notify = new KNotification(i18n("Unable to connect to the database"), this);
     notify->setText(details);
-    QPixmap pixmap = DesktopIcon("dialog-error",22); //NOTE: This does not works
+    QPixmap pixmap = themedPixmap("dialog-error",22); //NOTE: This does not works
     notify->setPixmap(pixmap);
     notify->sendEvent();
     
@@ -426,7 +425,7 @@ void iotstockView::showWelcomeGraphs()
   if (!graphSoldItemsCreated) setupGraphs();
   ui_mainview.stackedWidget->setCurrentIndex(pWelcome);
   ui_mainview.headerLabel->setText(i18n("Quick Information"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("view-statistics",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("view-statistics",22)));
   ui_mainview.btnPrintBalance->hide();
 }
 
@@ -441,7 +440,7 @@ void iotstockView::showProductsPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseProduct);
   if (productsModel->tableName().isEmpty()) setupProductsModel();
   ui_mainview.headerLabel->setText(i18n("Products"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-box",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-box",22)));
   ui_mainview.btnPrintBalance->hide();
   QTimer::singleShot(200,this, SLOT(adjustProductsTable()));
   qDebug()<<"view ALT geometry:"<<ui_mainview.productsViewAlt->geometry()<<" NORM Geom:"<<ui_mainview.productsView->geometry();
@@ -453,7 +452,7 @@ void iotstockView::showOffersPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseOffers);
   if (offersModel->tableName().isEmpty()) setupOffersModel();
   ui_mainview.headerLabel->setText(i18n("Offers"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-offers",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-offers",22)));
   ui_mainview.offersDateEditor->setDate(QDate::currentDate());
   QTimer::singleShot(500,this, SLOT(adjustOffersTable()));
   ui_mainview.btnPrintBalance->hide();
@@ -468,7 +467,7 @@ void iotstockView::showUsersPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseUsers);
   if (usersModel->tableName().isEmpty()) setupUsersModel();
   ui_mainview.headerLabel->setText(i18n("Vendors"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-user",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-user",22)));
   ui_mainview.btnPrintBalance->hide();
 }
 
@@ -477,7 +476,7 @@ void iotstockView::showMeasuresPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseMeasures);
   if (measuresModel->tableName().isEmpty()) setupMeasuresModel();
   ui_mainview.headerLabel->setText(i18n("Weight and Measures"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-ruler",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-ruler",22)));
   ui_mainview.btnPrintBalance->hide();
 }
 
@@ -486,7 +485,7 @@ void iotstockView::showDepartmentsPage()
     ui_mainview.stackedWidget->setCurrentIndex(pBrowseDepartments);
     if (departmentsModel->tableName().isEmpty()) setupDepartmentsModel();
     ui_mainview.headerLabel->setText(i18n("Departments"));
-    ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-categories",22)));
+    ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-categories",22)));
     ui_mainview.btnPrintBalance->hide();
 }
 
@@ -495,7 +494,7 @@ void iotstockView::showCategoriesPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseCategories);
   if (categoriesModel->tableName().isEmpty()) setupCategoriesModel();
   ui_mainview.headerLabel->setText(i18n("Categories"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-categories",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-categories",22)));
   ui_mainview.btnPrintBalance->hide();
 }
 
@@ -504,7 +503,7 @@ void iotstockView::showSubCategoriesPage()
     ui_mainview.stackedWidget->setCurrentIndex(pBrowseSubCategories);
     if (subcategoriesModel->tableName().isEmpty()) setupSubCategoriesModel();
     ui_mainview.headerLabel->setText(i18n("Subcategories"));
-    ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-categories",22)));
+    ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-categories",22)));
     ui_mainview.btnPrintBalance->hide();
 }
 
@@ -513,7 +512,7 @@ void iotstockView::showClientsPage()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseClients);
   if (clientsModel->tableName().isEmpty()) setupClientsModel();
   ui_mainview.headerLabel->setText(i18n("Clients"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-user",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-user",22)));
   ui_mainview.btnPrintBalance->hide();
 }
 
@@ -523,7 +522,7 @@ void iotstockView::showTransactionsPage()
   ui_mainview.stackedWidget2->setCurrentIndex(1);
   if (transactionsModel->tableName().isEmpty()) setupTransactionsModel();
   ui_mainview.headerLabel->setText(i18n("Transactions"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-reports",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-reports",22)));
   ui_mainview.transactionsDateEditor->setDate(QDate::currentDate());
   ui_mainview.btnPrintBalance->hide();
   QTimer::singleShot(200,fpFilterTrans, SLOT(fixPos()));
@@ -535,7 +534,7 @@ void iotstockView::showBalancesPage()
   ui_mainview.stackedWidget2->setCurrentIndex(2);
   if (balancesModel->tableName().isEmpty()) setupBalancesModel();
   ui_mainview.headerLabel->setText(i18n("Balances"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-balance",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-balance",22)));
   ui_mainview.btnPrintBalance->show();
   QTimer::singleShot(200,fpFilterBalances, SLOT(fixPos()));
 }
@@ -546,7 +545,7 @@ void iotstockView::showSpecialOrders()
   ui_mainview.stackedWidget2->setCurrentIndex(3);
   if (specialOrdersModel->tableName().isEmpty()) setupSpecialOrdersModel();
   ui_mainview.headerLabel->setText(i18n("Special Orders"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-box",22))); //FIXME: Create an icon
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-box",22))); //FIXME: Create an icon
   QTimer::singleShot(200,fpFilterSpecialOrders, SLOT(fixPos()));
   ui_mainview.datePicker->setDate(QDate::currentDate());
 }
@@ -558,7 +557,7 @@ void iotstockView::showCashFlowPage()
   ui_mainview.stackedWidget2->setCurrentIndex(0);
   if (cashflowModel->tableName().isEmpty()) setupCashFlowModel();
   ui_mainview.headerLabel->setText(i18n("Cash Flow"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-cashout",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-cashout",22)));
   ui_mainview.cashFlowTable->resizeColumnsToContents();
   ui_mainview.btnPrintBalance->hide();
 }
@@ -567,7 +566,7 @@ void iotstockView::showReports()
 {
   ui_mainview.stackedWidget->setCurrentIndex(pReports);
   ui_mainview.headerLabel->setText(i18n("Reports"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-reports",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-reports",22)));
 
   if (ui_mainview.stackedWidget2->currentIndex() == 2)
     ui_mainview.btnPrintBalance->show();
@@ -579,7 +578,7 @@ void iotstockView::showRandomMsgs()
 {
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseRandomMessages);
   ui_mainview.headerLabel->setText(i18n("Ticket Messages"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-ticket",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-ticket",22)));
   if (randomMsgModel->tableName().isEmpty()) setupRandomMsgModel();
 }
 
@@ -587,7 +586,7 @@ void iotstockView::showCurrencies()
 {
     ui_mainview.stackedWidget->setCurrentIndex(pBrowseCurrencies);
     ui_mainview.headerLabel->setText(i18n("Currencies"));
-    ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-money",22)));
+    ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-money",22)));
     if (currenciesModel->tableName().isEmpty()) setupCurrenciesModel();
 }
 
@@ -595,7 +594,7 @@ void iotstockView::showReservations()
 {
     ui_mainview.stackedWidget->setCurrentIndex(pBrowseReservations);//TODO:Remember to change the page number when merging with 0.9.3rc2
     ui_mainview.headerLabel->setText(i18n("Reservations"));
-    ui_mainview.headerImg->setPixmap((DesktopIcon("iotpos-box",22)));
+    ui_mainview.headerImg->setPixmap((themedPixmap("iotpos-box",22)));
     if (reservationsModel->tableName().isEmpty()) setupReservationsModel();
 }
 
@@ -3388,7 +3387,7 @@ void iotstockView::printEndOfDay()
       qDebug()<<"Nothing to print!";
       KNotification *notify = new KNotification(i18n("No transactions to print!"), this);
       notify->setText(i18n("No transactions for  terminal #%1 for today.", terminalNum));
-      QPixmap pixmap = DesktopIcon("dialog-warning",22);
+      QPixmap pixmap = themedPixmap("dialog-warning",22);
       notify->setPixmap(pixmap);
       notify->sendEvent();
       return; //just to quit.
@@ -4026,7 +4025,7 @@ void iotstockView::showLogs()
   ui_mainview.stackedWidget->setCurrentIndex(pBrowseLogs);
   if (logsModel->tableName().isEmpty()) setupLogsModel();
   ui_mainview.headerLabel->setText(i18n("Events Log"));
-  ui_mainview.headerImg->setPixmap((DesktopIcon("view-pim-tasks-pending",22)));
+  ui_mainview.headerImg->setPixmap((themedPixmap("view-pim-tasks-pending",22)));
 }
 
 void iotstockView::setupLogsModel()

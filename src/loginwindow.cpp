@@ -26,7 +26,7 @@
 
 #include <QtGui>
 #include <QPixmap>
-#include <kiconloader.h>
+#include "iconutils.h"
 #include <KLocalizedString>
 #include "pathutils.h"
 #include "../dataAccess/azahar.h"
@@ -60,8 +60,8 @@ LoginWindow::LoginWindow(QString caption,
   labelPrompt   = new QLabel(this);
   editUsername  = new QLineEdit(this);
   editPassword  = new QLineEdit(this);
-  btnQuit       = new QPushButton(DesktopIcon("system-shutdown", 48), i18n("&Quit"));
-  btnOk         = new QPushButton(DesktopIcon("dialog-ok-apply", 48), i18n("&Ok"), this);
+  btnQuit       = new QPushButton(themedPixmap("system-shutdown", 48), i18n("&Quit"));
+  btnOk         = new QPushButton(themedPixmap("dialog-ok-apply", 48), i18n("&Ok"), this);
   spacerItemBottom= new QSpacerItem(20, 100, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
   spacerItemTop = new QSpacerItem(20, 115, QSizePolicy::Minimum, QSizePolicy::Maximum);
   QSpacerItem *spacerItemBtn = new QSpacerItem(16, 16, QSizePolicy::Minimum, QSizePolicy::Maximum);
@@ -136,8 +136,8 @@ LoginWindow::LoginWindow(QString caption,
     case LoginWindow::FullScreen:
       setWindowState(Qt::WindowFullScreen);
       setObjectName("loginDialog");
-      mainImage->setPixmap(DesktopIcon("iotpos-user", 128));
-      imageError->setPixmap(DesktopIcon("dialog-cancel", 48));
+      mainImage->setPixmap(themedPixmap("iotpos-user", 128));
+      imageError->setPixmap(themedPixmap("dialog-cancel", 48));
       setGeometry(QApplication::desktop()->screenGeometry(this));
       break;
     case LoginWindow::PasswordOnly:
@@ -145,8 +145,8 @@ LoginWindow::LoginWindow(QString caption,
       //labelUsername->hide();
       //editUsername->hide();
       editPassword->setMaximumSize(QSize(120, 28));
-      mainImage->setPixmap(DesktopIcon("iotpos-user", 128));
-      imageError->setPixmap(DesktopIcon("dialog-cancel", 22));
+      mainImage->setPixmap(themedPixmap("iotpos-user", 128));
+      imageError->setPixmap(themedPixmap("dialog-cancel", 22));
       QTimer::singleShot(3000, this, SLOT(showAdminPhoto()));
       resize(348,215); //Size of the login background...
       path = PathUtils::locateAppData("styles/");
@@ -310,8 +310,8 @@ bool LoginWindow::checkPassword()
 void LoginWindow::showErrorMessage(QString text)
 {
   labelError->setText(text);
-  if (currentMode == LoginWindow::FullScreen) imageError->setPixmap(DesktopIcon("dialog-cancel", 48));
-  else imageError->setPixmap(DesktopIcon("dialog-cancel", 22));
+  if (currentMode == LoginWindow::FullScreen) imageError->setPixmap(themedPixmap("dialog-cancel", 48));
+  else imageError->setPixmap(themedPixmap("dialog-cancel", 22));
   QTimer::singleShot(3000, this, SLOT(hideError()));
 }
 
@@ -320,8 +320,8 @@ void LoginWindow::hideError()
   labelError->clear();
   //image hiding-showing moves the content and it flickers the graphics vertically.
   //so lets change the image.
-  if (currentMode == LoginWindow::FullScreen) imageError->setPixmap(DesktopIcon("document-encrypt", 48));
-  else imageError->setPixmap(DesktopIcon("document-encrypt", 22));
+  if (currentMode == LoginWindow::FullScreen) imageError->setPixmap(themedPixmap("document-encrypt", 48));
+  else imageError->setPixmap(themedPixmap("document-encrypt", 22));
 }
 
 void LoginWindow::acceptIt()
@@ -352,7 +352,7 @@ void LoginWindow::updateUserPhoto(const QString &text)
   }
   else {
     //Repaint image if it is the same??? how to know it is the same?
-    mainImage->setPixmap(DesktopIcon("iotpos-user", 128));
+    mainImage->setPixmap(themedPixmap("iotpos-user", 128));
   }
   mainImage->setAlignment(Qt::AlignCenter);
 }

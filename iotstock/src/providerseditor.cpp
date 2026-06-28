@@ -19,7 +19,7 @@
 ***************************************************************************/
 #include <QLocale>
 #include <KMessageBox>
-#include <KFileDialog>
+#include <QFileDialog>
 #include "pathutils.h"
 
 #include <QByteArray>

@@ -22,7 +22,7 @@
 #include "settings.h"
 
 #include <QtGui>
-#include <kiconloader.h>
+#include "iconutils.h"
 #include <KLocalizedString>
 #include <QPixmap>
 #include "pathutils.h"
@@ -43,15 +43,15 @@ InputDialog::InputDialog(QWidget *parent, bool integer, DialogType type, QString
   lPixmap       = new QLabel(this);
 
   // Icons for each type
-  if (type == dialogMeasures) lPixmap->setPixmap(DesktopIcon("kruler", 48));
-  else if (type == dialogMoney) lPixmap->setPixmap(DesktopIcon("iotpos-money", 48));
-  else if (type==dialogCashOut) lPixmap->setPixmap(DesktopIcon("iotpos-cashout", 48));
-  else if (type == dialogTicket) lPixmap->setPixmap(DesktopIcon("iotpos-ticket-cancel", 48));
-  else if (type == dialogSpecialOrder) lPixmap->setPixmap(DesktopIcon("iotpos-ticket", 48));
-  else if (type == dialogStockCorrection) lPixmap->setPixmap(DesktopIcon("iotstock-stock-correction", 48));
-  else if (type == dialogTerminalNum) lPixmap->setPixmap(DesktopIcon("iotpos-money", 48)); //FIXME: add an icon
-  else if (type == dialogTicketMsg)   lPixmap->setPixmap(DesktopIcon("iotpos-ticket", 48));
-  else if (type == dialogCurrency) lPixmap->setPixmap(DesktopIcon("iotpos-money", 48));
+  if (type == dialogMeasures) lPixmap->setPixmap(themedPixmap("kruler", 48));
+  else if (type == dialogMoney) lPixmap->setPixmap(themedPixmap("iotpos-money", 48));
+  else if (type==dialogCashOut) lPixmap->setPixmap(themedPixmap("iotpos-cashout", 48));
+  else if (type == dialogTicket) lPixmap->setPixmap(themedPixmap("iotpos-ticket-cancel", 48));
+  else if (type == dialogSpecialOrder) lPixmap->setPixmap(themedPixmap("iotpos-ticket", 48));
+  else if (type == dialogStockCorrection) lPixmap->setPixmap(themedPixmap("iotstock-stock-correction", 48));
+  else if (type == dialogTerminalNum) lPixmap->setPixmap(themedPixmap("iotpos-money", 48)); //FIXME: add an icon
+  else if (type == dialogTicketMsg)   lPixmap->setPixmap(themedPixmap("iotpos-ticket", 48));
+  else if (type == dialogCurrency) lPixmap->setPixmap(themedPixmap("iotpos-money", 48));
 
 
   //labels

@@ -25,7 +25,7 @@ If the sudo ./install.sh does not work try:
 
 	sudo sh install.sh
 
-If you wish to setup and install manually please see below:
+If you wish to set up and install manually, see below:
 
 ---------------------------------------------------MANUAL SOFTWARE-SETUP----------------------------------------------------
 
@@ -38,7 +38,7 @@ Now that everything is up to date, we can install the needed KDE Frameworks 5 an
   
   sudo apt-get install build-essential cmake extra-cmake-modules gettext g++ qtbase5-dev qttools5-dev \
     libqt5sql5-mysql libkf5config-dev libkf5configwidgets-dev libkf5i18n-dev \
-    libkf5kio-dev libkf5widgetsaddons-dev libkf5xmlgui-dev
+    libkf5kio-dev libkf5notifications-dev libkf5plotting-dev libkf5widgetsaddons-dev libkf5xmlgui-dev
   
 For a spanish KDE app: 
 
@@ -205,9 +205,9 @@ replace -your_mail@gmail.com- with your gmail account.
 
 Needed only for Developers.
 
-If you want to cntribuite with the proyect you need to install Qt4 on the Raspberry Pi
+If you want to cntribuite with the proyect you need to install Qt5 on the Raspberry Pi
 
-  sudo apt-get install qt4-dev-tools
+  sudo apt-get install qttools5-dev
 
 Then:
 
@@ -233,5 +233,5 @@ Mkspec : default
 Go to menu help > about plugins
 Uncheck device support > remote linux
 Restart Qt Creator
-Go to tools > options TAB > build & run > Qt versions > add "/usr/bin/qmake-qt4"
+Go to Tools > Options > Kits and select the installed Qt5 toolchain.
 

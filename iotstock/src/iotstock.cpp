@@ -30,15 +30,14 @@
 #include <QTimer>
 #include <QDesktopWidget>
 
-#include <kdeversion.h>
-#include <kiconloader.h>
+#include "iconutils.h"
 #include <kmenubar.h>
 #include <kstatusbar.h>
 #include <kconfigdialog.h>
 //#include <kio/netaccess.h>
-// #include <kfiledialog.h>
+// #include <QFileDialog>
 #include <kactioncollection.h>
-#include <kaction.h>
+#include <QAction>
 #include <QLocale>
 #include <kled.h>
 #include "pathutils.h"
@@ -303,163 +302,163 @@ void iotstock::setupActions()
     //My actions
     QAction* loginAction =  actionCollection()->addAction( "login" );
     loginAction->setText(i18n("Login"));
-    loginAction->setIcon(KIcon("office-address-book"));
+    loginAction->setIcon(themedIcon("office-address-book"));
     loginAction->setShortcut(Qt::CTRL+Qt::Key_L);
     connect(loginAction, SIGNAL(triggered(bool)),m_view, SLOT(login()));
 
     QAction* usersBrowseAction =  actionCollection()->addAction( "usersBrowse" );
     usersBrowseAction->setText(i18n("Users"));
-    usersBrowseAction->setIcon(KIcon("iotpos-user"));
+    usersBrowseAction->setIcon(themedIcon("iotpos-user"));
     usersBrowseAction->setShortcut(Qt::CTRL+Qt::Key_U);
     connect(usersBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showUsersPage()));
 
     QAction* clientsBrowseAction =  actionCollection()->addAction( "clientsBrowse" );
     clientsBrowseAction->setText(i18n("Clients"));
-    clientsBrowseAction->setIcon(KIcon("iotpos-user"));//TODO:Create an icon for this...
+    clientsBrowseAction->setIcon(themedIcon("iotpos-user"));//TODO:Create an icon for this...
     clientsBrowseAction->setShortcut(Qt::CTRL+Qt::Key_I);
     connect(clientsBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showClientsPage()));
 
     QAction* prodBrowseAction =  actionCollection()->addAction( "productsBrowse" );
     prodBrowseAction->setText(i18n("Products"));
-    prodBrowseAction->setIcon(KIcon("iotpos-box"));
+    prodBrowseAction->setIcon(themedIcon("iotpos-box"));
     prodBrowseAction->setShortcut(Qt::CTRL+Qt::Key_P);
     connect(prodBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showProductsPage()));
     
     QAction* measuresBrowseAction =  actionCollection()->addAction( "measuresBrowse" );
     measuresBrowseAction->setText(i18n("Measures"));
-    measuresBrowseAction->setIcon(KIcon("iotpos-ruler"));
+    measuresBrowseAction->setIcon(themedIcon("iotpos-ruler"));
     measuresBrowseAction->setShortcut(Qt::CTRL+Qt::Key_M);
     connect(measuresBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showMeasuresPage()));
 
     QAction* departmentsBrowseAction =  actionCollection()->addAction( "departmentsBrowse" );
     departmentsBrowseAction->setText(i18n("Departments"));
-    departmentsBrowseAction->setIcon(KIcon("iotpos-categories"));
+    departmentsBrowseAction->setIcon(themedIcon("iotpos-categories"));
     departmentsBrowseAction->setShortcut(Qt::CTRL+Qt::Key_C);
     connect(departmentsBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showDepartmentsPage()));
 
     QAction* categoriesBrowseAction =  actionCollection()->addAction( "categoriesBrowse" );
     categoriesBrowseAction->setText(i18n("Categories"));
-    categoriesBrowseAction->setIcon(KIcon("iotpos-categories"));
+    categoriesBrowseAction->setIcon(themedIcon("iotpos-categories"));
     categoriesBrowseAction->setShortcut(Qt::CTRL+Qt::Key_C);
     connect(categoriesBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showCategoriesPage()));
 
     QAction* subcategoriesBrowseAction =  actionCollection()->addAction( "subcategoriesBrowse" );
     subcategoriesBrowseAction->setText(i18n("Subcategories"));
-    subcategoriesBrowseAction->setIcon(KIcon("iotpos-categories"));
+    subcategoriesBrowseAction->setIcon(themedIcon("iotpos-categories"));
     subcategoriesBrowseAction->setShortcut(Qt::CTRL+Qt::Key_S); //see if it not causes troubles... CTRL-S
     connect(subcategoriesBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showSubCategoriesPage()));
 
     QAction* offersBrowseAction =  actionCollection()->addAction( "offersBrowse" );
     offersBrowseAction->setText(i18n("Offers"));
-    offersBrowseAction->setIcon(KIcon("iotpos-offers"));
+    offersBrowseAction->setIcon(themedIcon("iotpos-offers"));
     offersBrowseAction->setShortcut(Qt::CTRL+Qt::Key_O);
     connect(offersBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showOffersPage()));
 
     QAction* balancesBrowseAction =  actionCollection()->addAction( "balancesBrowse" );
     balancesBrowseAction->setText(i18n("Balances"));
-    balancesBrowseAction->setIcon(KIcon("iotposbalance"));
+    balancesBrowseAction->setIcon(themedIcon("iotposbalance"));
     balancesBrowseAction->setShortcut(Qt::CTRL+Qt::Key_B);
     connect(balancesBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showBalancesPage()));
 
     QAction* cashFlowBrowseAction =  actionCollection()->addAction( "cashFlowBrowse" );
     cashFlowBrowseAction->setText(i18n("Cash Flow"));
-    cashFlowBrowseAction->setIcon(KIcon("iotpos-cashout"));
+    cashFlowBrowseAction->setIcon(themedIcon("iotpos-cashout"));
     cashFlowBrowseAction->setShortcut(Qt::CTRL+Qt::Key_F);
     connect(cashFlowBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showCashFlowPage()));
 
     QAction* transactionsBrowseAction =  actionCollection()->addAction( "transactionsBrowse" );
     transactionsBrowseAction->setText(i18n("Transactions"));
-    transactionsBrowseAction->setIcon(KIcon("wallet-open"));
+    transactionsBrowseAction->setIcon(themedIcon("wallet-open"));
     transactionsBrowseAction->setShortcut(Qt::CTRL+Qt::Key_T);
     connect(transactionsBrowseAction, SIGNAL(triggered(bool)),m_view, SLOT(showTransactionsPage()));
 
     QAction* quickViewPlotsAction =  actionCollection()->addAction( "quickViewPlots" );
     quickViewPlotsAction->setText(i18n("Quick Plots"));
-    quickViewPlotsAction->setIcon(KIcon("view-statistics"));
+    quickViewPlotsAction->setIcon(themedIcon("view-statistics"));
     quickViewPlotsAction->setShortcut(Qt::CTRL+Qt::Key_W);
     connect(quickViewPlotsAction, SIGNAL(triggered(bool)),m_view, SLOT(showWelcomeGraphs()));
 
     QAction* purchaseAction =  actionCollection()->addAction( "doPurchase" ); //Alias Check IN
     purchaseAction->setText(i18n("Purchase"));
-    purchaseAction->setIcon(KIcon("iotpos-box"));
+    purchaseAction->setIcon(themedIcon("iotpos-box"));
     purchaseAction->setShortcut(Qt::Key_F2);
     connect(purchaseAction, SIGNAL(triggered(bool)),m_view, SLOT(doPurchase()));
 
     QAction* checkOutAction =  actionCollection()->addAction( "checkOut" );
     checkOutAction->setText(i18n("Check Out"));
-    checkOutAction->setIcon(KIcon("iotpos-money"));//TODO:Create an icon for this...
+    checkOutAction->setIcon(themedIcon("iotpos-money"));//TODO:Create an icon for this...
     checkOutAction->setShortcut(Qt::Key_F3);
     connect(checkOutAction, SIGNAL(triggered(bool)),m_view, SLOT(doCheckOut()));
 
     QAction* stockCorrectionAction =  actionCollection()->addAction( "stockCorrection" );
     stockCorrectionAction->setText(i18n("Stock Correction"));
-    stockCorrectionAction->setIcon(KIcon("iotpos-box"));//TODO:Create an icon for this...
+    stockCorrectionAction->setIcon(themedIcon("iotpos-box"));//TODO:Create an icon for this...
     stockCorrectionAction->setShortcut(Qt::Key_F4);
     connect(stockCorrectionAction, SIGNAL(triggered(bool)),m_view, SLOT(stockCorrection()));
 
     QAction* reportsAction =  actionCollection()->addAction( "reports" );
     reportsAction->setText(i18n("Reports"));
-    reportsAction->setIcon(KIcon("iotpos-reports"));
+    reportsAction->setIcon(themedIcon("iotpos-reports"));
     reportsAction->setShortcut(Qt::Key_F5);
     connect(reportsAction, SIGNAL(triggered(bool)),m_view, SLOT(showReports()));
 
     QAction *action = actionCollection()->addAction( "printEndOfDay" );
     action->setText(i18n("Print End of day report"));
-    action->setIcon(KIcon("iotpos-reports"));
+    action->setIcon(themedIcon("iotpos-reports"));
     action->setShortcut(Qt::Key_F6);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(printEndOfDay()));
     
     action = actionCollection()->addAction( "printEndOfDayGral" );
     action->setText(i18n("Print General end of day report"));
-    action->setIcon(KIcon("iotpos-reports"));
+    action->setIcon(themedIcon("iotpos-reports"));
     action->setShortcut(Qt::Key_F7);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(printGralEndOfDay()));
 
     action = actionCollection()->addAction( "printEndOfMonth" );
     action->setText(i18n("Print End of month report"));
-    action->setIcon(KIcon("iotpos-reports"));
+    action->setIcon(themedIcon("iotpos-reports"));
     action->setShortcut(Qt::Key_F8);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(printEndOfMonth()));
 
     action = actionCollection()->addAction( "printLowStock" );
     action->setText(i18n("Print Low stock products"));
-    action->setIcon(KIcon("iotpos-reports"));
+    action->setIcon(themedIcon("iotpos-reports"));
     action->setShortcut(Qt::Key_F9);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(printLowStockProducts()));
 
     action = actionCollection()->addAction( "printSoldOut" );
     action->setText(i18n("Print Sold out products"));
-    action->setIcon(KIcon("iotpos-reports"));
+    action->setIcon(themedIcon("iotpos-reports"));
     action->setShortcut(Qt::Key_F10);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(printSoldOutProducts()));
 
     action = actionCollection()->addAction( "showSpecialOrders" );
     action->setText(i18n("Show Special Orders"));
-    action->setIcon(KIcon("iotpos-box")); //FIXME: Create an ICON
+    action->setIcon(themedIcon("iotpos-box")); //FIXME: Create an ICON
     action->setShortcut(Qt::Key_Insert);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(showSpecialOrders()));
 
     action = actionCollection()->addAction( "randomMsgsBrowse" );
     action->setText(i18n("Ticket Messages"));
-    action->setIcon(KIcon("iotpos-ticket"));
+    action->setIcon(themedIcon("iotpos-ticket"));
     action->setShortcut(Qt::CTRL+Qt::Key_M);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(showRandomMsgs()));
 
     action = actionCollection()->addAction( "viewLog" );
     action->setText(i18n("View Events Log"));
-    action->setIcon(KIcon("view-pim-tasks-pending"));
+    action->setIcon(themedIcon("view-pim-tasks-pending"));
     action->setShortcut(Qt::CTRL+Qt::Key_G);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(showLogs()));
 
     action = actionCollection()->addAction( "currenciesBrowse" );
     action->setText(i18n("View Currencies"));
-    action->setIcon(KIcon("iotpos-money"));
+    action->setIcon(themedIcon("iotpos-money"));
     action->setShortcut(Qt::ALT+Qt::Key_C);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(showCurrencies()));
 
     action = actionCollection()->addAction( "reservationsBrowse" );
     action->setText(i18n("View Reservations"));
-    action->setIcon(KIcon("iotpos-box"));
+    action->setIcon(themedIcon("iotpos-box"));
     action->setShortcut(Qt::ALT+Qt::Key_R);
     connect(action, SIGNAL(triggered(bool)),m_view, SLOT(showReservations()));
 

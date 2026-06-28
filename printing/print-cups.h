@@ -31,6 +31,7 @@
 */
 
 class QString;
+class QPrinter;
 
 class PrintCUPS {
   public:

@@ -3513,7 +3513,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>KPlotWidget</class>
    <extends>QFrame</extends>
-   <header>kplotwidget.h</header>
+   <header>KPlotWidget</header>
    <container>1</container>
   </customwidget>
   <customwidget>

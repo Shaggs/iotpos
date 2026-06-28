@@ -18,6 +18,7 @@ sudo apt-get install \
   libkf5widgetsaddons-dev \
   libkf5xmlgui-dev \
   libqt5sql5-mysql \
+  libqt5svg5-dev \
   qtbase5-dev \
   qttools5-dev \
   -y

@@ -816,5 +816,3 @@ void iotpos::salir()
     kapp->quit();
   }
 }
-
-#include "iotpos.moc"

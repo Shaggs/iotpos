@@ -103,5 +103,3 @@ void TicketPopup::closeIt()
   emit onTicketPopupClose(); //to let iotstockview unfreeze the widgets
   close();
 }
-
-#include "ticketpopup.moc"

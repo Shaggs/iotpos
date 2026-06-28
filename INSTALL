@@ -37,7 +37,7 @@ Now that everything is up to date, we can install the needed KDE Frameworks 5 an
   we need for the compile and install:
   
   sudo apt-get install build-essential cmake extra-cmake-modules gettext g++ qtbase5-dev qttools5-dev \
-    libqt5sql5-mysql libkf5config-dev libkf5configwidgets-dev libkf5i18n-dev \
+    libqt5sql5-mysql libkf5completion-dev libkf5config-dev libkf5configwidgets-dev libkf5i18n-dev \
     libkf5kio-dev libkf5notifications-dev libkf5plotting-dev libkf5widgetsaddons-dev libkf5xmlgui-dev
   
 For a spanish KDE app: 
